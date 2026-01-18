@@ -7,7 +7,8 @@ set -e
 # Configuration
 IMAGE_NAME="prefixplay"
 CONTAINER_NAME="prefixplay"
-REMOTE_PORT=8080
+REMOTE_PORT=3402
+REMOTE_PATH="/volume1/docker/prefixplay"
 
 # Colors for output
 RED='\033[0;31m'
@@ -22,58 +23,27 @@ if [ -n "$1" ]; then
     REMOTE_HOST="$1"
     echo -e "${YELLOW}Deploying to remote host: ${REMOTE_HOST}${NC}"
 
-    # Build and save image locally
-    echo -e "${GREEN}Building Docker image...${NC}"
-    docker build -t ${IMAGE_NAME}:latest .
-
-    # Save image to tar
-    echo -e "${GREEN}Saving image to tar...${NC}"
-    docker save ${IMAGE_NAME}:latest | gzip > /tmp/${IMAGE_NAME}.tar.gz
-
-    # Copy to remote
-    echo -e "${GREEN}Copying image to remote...${NC}"
-    scp /tmp/${IMAGE_NAME}.tar.gz ${REMOTE_HOST}:/tmp/
-
-    # Load and run on remote
-    echo -e "${GREEN}Loading and starting container on remote...${NC}"
+    # Pull latest changes and rebuild on remote using docker-compose
+    echo -e "${GREEN}Pulling latest changes and rebuilding on remote...${NC}"
     ssh ${REMOTE_HOST} "
-        docker load < /tmp/${IMAGE_NAME}.tar.gz && \
-        docker stop ${CONTAINER_NAME} 2>/dev/null || true && \
-        docker rm ${CONTAINER_NAME} 2>/dev/null || true && \
-        docker run -d \
-            --name ${CONTAINER_NAME} \
-            --restart unless-stopped \
-            -p ${REMOTE_PORT}:80 \
-            ${IMAGE_NAME}:latest && \
-        rm /tmp/${IMAGE_NAME}.tar.gz && \
-        echo 'Container started successfully!'
+        export PATH=/usr/local/bin:\$PATH && \
+        cd ${REMOTE_PATH} && \
+        git pull && \
+        docker-compose down && \
+        docker-compose up -d --build && \
+        echo 'Deployment complete!'
     "
 
-    # Cleanup local tar
-    rm /tmp/${IMAGE_NAME}.tar.gz
-
     echo -e "${GREEN}=== Deployment to ${REMOTE_HOST} complete ===${NC}"
-    echo -e "Access the app at: http://${REMOTE_HOST}:${REMOTE_PORT}"
+    echo -e "Access the app at: https://prefixplay.oeradio.at"
 else
     # Local deployment
     echo -e "${YELLOW}Deploying locally...${NC}"
 
-    # Build image
-    echo -e "${GREEN}Building Docker image...${NC}"
-    docker build -t ${IMAGE_NAME}:latest .
-
-    # Stop and remove existing container
-    echo -e "${GREEN}Stopping existing container...${NC}"
-    docker stop ${CONTAINER_NAME} 2>/dev/null || true
-    docker rm ${CONTAINER_NAME} 2>/dev/null || true
-
-    # Run new container
-    echo -e "${GREEN}Starting new container...${NC}"
-    docker run -d \
-        --name ${CONTAINER_NAME} \
-        --restart unless-stopped \
-        -p ${REMOTE_PORT}:80 \
-        ${IMAGE_NAME}:latest
+    # Build and run using docker-compose
+    echo -e "${GREEN}Building and starting with docker-compose...${NC}"
+    docker-compose down 2>/dev/null || true
+    docker-compose up -d --build
 
     echo -e "${GREEN}=== Local deployment complete ===${NC}"
     echo -e "Access the app at: http://localhost:${REMOTE_PORT}"
