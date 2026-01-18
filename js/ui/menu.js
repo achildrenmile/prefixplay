@@ -4,7 +4,7 @@
  */
 
 import { t, getLanguage, setLanguage, getAvailableLanguages } from '../i18n/translations.js';
-import { getDxccModes, getAustriaModes } from '../models/game-state.js';
+import { getDxccModes, getAustriaModes, getNeighborModes } from '../models/game-state.js';
 
 /**
  * Menu Class
@@ -34,7 +34,9 @@ export class Menu {
       'prefix-to-country': t('prefixToCountry'),
       'country-to-prefix': t('countryToPrefix'),
       'oe-prefix-to-state': t('oePrefixToState'),
-      'state-to-oe-prefix': t('stateToOePrefix')
+      'state-to-oe-prefix': t('stateToOePrefix'),
+      'neighbor-prefix-to-country': t('neighborPrefixToCountry'),
+      'country-to-neighbor-prefix': t('countryToNeighborPrefix')
     };
     return names[modeId] || modeId;
   }
@@ -45,6 +47,7 @@ export class Menu {
   render() {
     const dxccModes = getDxccModes();
     const austriaModes = getAustriaModes();
+    const neighborModes = getNeighborModes();
     const languages = getAvailableLanguages();
     const currentLang = getLanguage();
 
@@ -84,6 +87,20 @@ export class Menu {
           <label class="menu-label">${t('austriaModes')}</label>
           <div class="mode-selector">
             ${austriaModes.map(mode => `
+              <button class="mode-btn ${mode.id === this.currentModeId ? 'active' : ''}"
+                      data-mode="${mode.id}">
+                <span class="mode-icon">${mode.icon}</span>
+                <span class="mode-name">${this.getModeName(mode.id)}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Neighbors Modes -->
+        <div class="menu-section">
+          <label class="menu-label">${t('neighborsModes')}</label>
+          <div class="mode-selector">
+            ${neighborModes.map(mode => `
               <button class="mode-btn ${mode.id === this.currentModeId ? 'active' : ''}"
                       data-mode="${mode.id}">
                 <span class="mode-icon">${mode.icon}</span>

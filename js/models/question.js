@@ -5,10 +5,12 @@
 
 import { DXCC_ENTITIES, getRandomEntity, CONTINENT_GROUPS } from '../data/dxcc.js';
 import { AUSTRIA_STATES, getRandomState, initializeAustriaLookups } from '../data/austria.js';
+import { AUSTRIA_NEIGHBORS, getRandomNeighbor, initializeNeighborLookups } from '../data/neighbors.js';
 import { GAME_MODES } from './game-state.js';
 
-// Initialize Austria lookups
+// Initialize lookups
 initializeAustriaLookups();
+initializeNeighborLookups();
 
 /**
  * Question class representing a single quiz question
@@ -48,6 +50,11 @@ export class QuestionGenerator {
     // Handle Austrian modes separately
     if (mode.category === 'austria') {
       return this.generateAustrianQuestion(mode, options);
+    }
+
+    // Handle Neighbors modes separately
+    if (mode.category === 'neighbors') {
+      return this.generateNeighborQuestion(mode, options);
     }
 
     let targetEntity;
@@ -166,6 +173,104 @@ export class QuestionGenerator {
    */
   generateAustrianDistractors(correctState, count = 3) {
     const available = AUSTRIA_STATES.filter(s => s.id !== correctState.id);
+    this.shuffleArray(available);
+    return available.slice(0, count);
+  }
+
+  /**
+   * Generate Neighbor question
+   */
+  generateNeighborQuestion(mode, options = {}) {
+    const { practiceMode = false, excludeRecent = [] } = options;
+
+    let targetNeighbor;
+
+    // If practice mode
+    if (practiceMode && this.retryPool && this.retryPool.hasItems(mode.id)) {
+      const neighborId = this.retryPool.getNext(mode.id);
+      targetNeighbor = AUSTRIA_NEIGHBORS.find(n => n.id === neighborId);
+    }
+
+    // Fall back to random
+    if (!targetNeighbor) {
+      targetNeighbor = getRandomNeighbor(excludeRecent);
+    }
+
+    switch (mode.id) {
+      case GAME_MODES.NEIGHBOR_PREFIX_TO_COUNTRY.id:
+        return this.generateNeighborPrefixToCountry(targetNeighbor, mode);
+      case GAME_MODES.COUNTRY_TO_NEIGHBOR_PREFIX.id:
+        return this.generateCountryToNeighborPrefix(targetNeighbor, mode);
+      default:
+        return this.generateNeighborPrefixToCountry(targetNeighbor, mode);
+    }
+  }
+
+  /**
+   * Generate "Neighbor Prefix -> Country" question
+   */
+  generateNeighborPrefixToCountry(neighbor, mode) {
+    // Get distractors (other neighboring countries)
+    const distractors = this.generateNeighborDistractors(neighbor, 3);
+
+    // Create options
+    const options = [
+      { value: neighbor.name, label: neighbor.name, flag: neighbor.flag },
+      ...distractors.map(d => ({ value: d.name, label: d.name, flag: d.flag }))
+    ];
+
+    this.shuffleArray(options);
+
+    return new Question({
+      mode,
+      prompt: `Welches Nachbarland verwendet "${neighbor.primaryPrefix}"?`,
+      correctAnswer: neighbor.name,
+      options,
+      entityId: neighbor.id,
+      metadata: {
+        prefix: neighbor.primaryPrefix,
+        capital: neighbor.capital,
+        flag: neighbor.flag,
+        icon: mode.icon
+      }
+    });
+  }
+
+  /**
+   * Generate "Country -> Neighbor Prefix" question
+   */
+  generateCountryToNeighborPrefix(neighbor, mode) {
+    // Get distractors
+    const distractors = this.generateNeighborDistractors(neighbor, 3);
+
+    // Create options
+    const options = [
+      { value: neighbor.primaryPrefix, label: neighbor.primaryPrefix },
+      ...distractors.map(d => ({ value: d.primaryPrefix, label: d.primaryPrefix }))
+    ];
+
+    this.shuffleArray(options);
+
+    return new Question({
+      mode,
+      prompt: `Was ist der Prefix für ${neighbor.flag} ${neighbor.name}?`,
+      correctAnswer: neighbor.primaryPrefix,
+      options,
+      entityId: neighbor.id,
+      metadata: {
+        country: neighbor.name,
+        flag: neighbor.flag,
+        capital: neighbor.capital,
+        icon: mode.icon
+      }
+    });
+  }
+
+  /**
+   * Generate Neighbor distractors
+   */
+  generateNeighborDistractors(correctNeighbor, count = 3) {
+    const available = AUSTRIA_NEIGHBORS.filter(n => n.id !== correctNeighbor.id);
     this.shuffleArray(available);
     return available.slice(0, count);
   }

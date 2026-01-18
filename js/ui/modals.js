@@ -84,6 +84,74 @@ export function showPrivacyNotice(onClose = () => {}) {
 }
 
 /**
+ * Show Imprint Modal
+ */
+export function showImprint(onClose = () => {}) {
+  const container = getModalContainer();
+
+  const html = `
+    <div class="modal-overlay" id="imprint-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>${t('imprintTitle')}</h2>
+        </div>
+        <div class="modal-body">
+          <p><strong>${t('imprintResponsible')}</strong></p>
+          <p>
+            Kurt Baumann<br>
+            OE8YML<br>
+            9521 Treffen<br>
+            Austria
+          </p>
+          <p><strong>${t('imprintContact')}</strong></p>
+          <p>
+            E-Mail: <a href="mailto:oe8yml@rednil.at">oe8yml@rednil.at</a>
+          </p>
+          <p class="imprint-note">${t('imprintNote')}</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="imprint-close">${t('close')}</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Animate in
+  requestAnimationFrame(() => {
+    container.querySelector('.modal-overlay')?.classList.add('visible');
+  });
+
+  // Close button
+  const closeBtn = container.querySelector('#imprint-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      closeModal('imprint-modal', onClose);
+    });
+  }
+
+  // Click outside to close
+  const overlay = container.querySelector('.modal-overlay');
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeModal('imprint-modal', onClose);
+      }
+    });
+  }
+
+  // Escape to close
+  const escHandler = (e) => {
+    if (e.key === 'Escape') {
+      closeModal('imprint-modal', onClose);
+      document.removeEventListener('keydown', escHandler);
+    }
+  };
+  document.addEventListener('keydown', escHandler);
+}
+
+/**
  * Show Reset Confirmation Modal
  */
 export function showResetConfirmation(onConfirm = () => {}, onCancel = () => {}) {

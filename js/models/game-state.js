@@ -46,6 +46,26 @@ export const GAME_MODES = {
     description: 'Identify the OE prefix from federal state',
     questionTemplate: 'What is the prefix for {state}?',
     answerType: 'prefix'
+  },
+
+  // Neighbors (bordering countries) Modes
+  NEIGHBOR_PREFIX_TO_COUNTRY: {
+    id: 'neighbor-prefix-to-country',
+    name: 'Nachbar-Prefix \u2192 Land',
+    icon: '\u{1F1EA}\u{1F1FA}',
+    category: 'neighbors',
+    description: 'Identify the neighboring country from prefix',
+    questionTemplate: 'Which country uses {prefix}?',
+    answerType: 'country'
+  },
+  COUNTRY_TO_NEIGHBOR_PREFIX: {
+    id: 'country-to-neighbor-prefix',
+    name: 'Land \u2192 Nachbar-Prefix',
+    icon: '\u{1F5FA}\u{FE0F}',
+    category: 'neighbors',
+    description: 'Identify the prefix of a neighboring country',
+    questionTemplate: 'What is the prefix for {country}?',
+    answerType: 'prefix'
   }
 };
 
@@ -75,6 +95,13 @@ export function getDxccModes() {
  */
 export function getAustriaModes() {
   return getGameModesByCategory('austria');
+}
+
+/**
+ * Get Neighbors (bordering countries) game modes
+ */
+export function getNeighborModes() {
+  return getGameModesByCategory('neighbors');
 }
 
 /**

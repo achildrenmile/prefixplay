@@ -42,6 +42,15 @@ export const TRANSLATIONS = {
     whichStateUsesPrefix: 'Welches Bundesland verwendet "{prefix}"?',
     whatPrefixForState: 'Welcher Prefix gilt f\u00FCr {state}?',
 
+    // Game modes - Neighbors
+    neighborsModes: '\u{1F1EA}\u{1F1FA} Nachbarl\u00E4nder',
+    neighborPrefixToCountry: 'Prefix \u2192 Nachbarland',
+    neighborPrefixToCountryDesc: 'Erkenne das Nachbarland anhand des Prefix',
+    countryToNeighborPrefix: 'Nachbarland \u2192 Prefix',
+    countryToNeighborPrefixDesc: 'Erkenne den Prefix anhand des Nachbarlandes',
+    whichNeighborUsesPrefix: 'Welches Nachbarland verwendet "{prefix}"?',
+    whatPrefixForNeighbor: 'Welcher Prefix gilt f\u00FCr {country}?',
+
     // Game
     whatCountryUsesPrefix: 'Welches Land verwendet den Prefix "{prefix}"?',
     whatIsPrefixFor: 'Was ist der prim\u00E4re Prefix f\u00FCr {country}?',
@@ -158,6 +167,12 @@ export const TRANSLATIONS = {
     footerGithub: 'GitHub',
     allDataLocal: 'Alle Daten bleiben lokal im Browser',
 
+    // Imprint
+    imprintTitle: 'Impressum',
+    imprintResponsible: 'Verantwortlich f\u00FCr den Inhalt',
+    imprintContact: 'Kontakt',
+    imprintNote: 'Diese Website ist ein privates, nicht-kommerzielles Projekt zur Unterst\u00FCtzung der Amateurfunk-Ausbildung.',
+
     // Misc
     close: 'Schlie\u00DFen',
     loading: 'Laden...',
@@ -199,6 +214,15 @@ export const TRANSLATIONS = {
     stateToOePrefixDesc: 'Identify the OE prefix from federal state',
     whichStateUsesPrefix: 'Which federal state uses "{prefix}"?',
     whatPrefixForState: 'What is the prefix for {state}?',
+
+    // Game modes - Neighbors
+    neighborsModes: '\u{1F1EA}\u{1F1FA} Neighboring Countries',
+    neighborPrefixToCountry: 'Prefix \u2192 Neighbor',
+    neighborPrefixToCountryDesc: 'Identify the neighboring country from prefix',
+    countryToNeighborPrefix: 'Neighbor \u2192 Prefix',
+    countryToNeighborPrefixDesc: 'Identify the prefix of a neighboring country',
+    whichNeighborUsesPrefix: 'Which neighboring country uses "{prefix}"?',
+    whatPrefixForNeighbor: 'What is the prefix for {country}?',
 
     // Game
     whatCountryUsesPrefix: 'What country uses the prefix "{prefix}"?',
@@ -315,6 +339,12 @@ export const TRANSLATIONS = {
     footerAchievements: 'Achievements',
     footerGithub: 'GitHub',
     allDataLocal: 'All data stays local in your browser',
+
+    // Imprint
+    imprintTitle: 'Imprint',
+    imprintResponsible: 'Responsible for content',
+    imprintContact: 'Contact',
+    imprintNote: 'This website is a private, non-commercial project to support amateur radio training.',
 
     // Misc
     close: 'Close',

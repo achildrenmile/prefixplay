@@ -622,26 +622,21 @@ button {
   text-align: center;
 }
 
-.footer-nav {
+.footer-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
-.footer-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  background: none;
-  border: none;
+.footer-links a {
   color: var(--text-secondary);
   font-size: 0.85rem;
   transition: color var(--transition-fast);
 }
 
-.footer-link:hover {
+.footer-links a:hover {
   color: var(--text-primary);
 }
 
@@ -649,12 +644,11 @@ button {
   color: var(--text-muted);
 }
 
-.privacy-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: 0.8rem;
+.imprint-note {
+  font-size: 0.9rem;
   color: var(--text-muted);
+  margin-top: var(--spacing-md);
+  font-style: italic;
 }
 
 /* ===== Modals ===== */
@@ -1073,7 +1067,7 @@ button {
     font-size: 1.3rem;
   }
 
-  .footer-nav {
+  .footer-links {
     flex-wrap: wrap;
   }
 
