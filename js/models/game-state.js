@@ -8,10 +8,12 @@
  * Each mode defines how questions are generated
  */
 export const GAME_MODES = {
+  // DXCC World Modes
   PREFIX_TO_COUNTRY: {
     id: 'prefix-to-country',
     name: 'Prefix \u2192 Country',
     icon: '\u{1F4E1}',
+    category: 'dxcc',
     description: 'Identify the country from a callsign prefix',
     questionTemplate: 'What country uses the prefix {prefix}?',
     answerType: 'country'
@@ -20,14 +22,31 @@ export const GAME_MODES = {
     id: 'country-to-prefix',
     name: 'Country \u2192 Prefix',
     icon: '\u{1F30D}',
+    category: 'dxcc',
     description: 'Identify the prefix from a country name',
     questionTemplate: 'What is the primary prefix for {country}?',
     answerType: 'prefix'
+  },
+
+  // Austria (OE) Modes
+  OE_PREFIX_TO_STATE: {
+    id: 'oe-prefix-to-state',
+    name: 'OE \u2192 Bundesland',
+    icon: '\u{1F1E6}\u{1F1F9}',
+    category: 'austria',
+    description: 'Identify the Austrian federal state from OE prefix',
+    questionTemplate: 'Which federal state uses {prefix}?',
+    answerType: 'state'
+  },
+  STATE_TO_OE_PREFIX: {
+    id: 'state-to-oe-prefix',
+    name: 'Bundesland \u2192 OE',
+    icon: '\u{1F3D4}\u{FE0F}',
+    category: 'austria',
+    description: 'Identify the OE prefix from federal state',
+    questionTemplate: 'What is the prefix for {state}?',
+    answerType: 'prefix'
   }
-  // Future modes can be added here:
-  // FLAG_TO_COUNTRY: { ... },
-  // CALLSIGN_TO_COUNTRY: { ... },
-  // CONTINENT_CHALLENGE: { ... }
 };
 
 /**
@@ -35,6 +54,27 @@ export const GAME_MODES = {
  */
 export function getGameModes() {
   return Object.values(GAME_MODES);
+}
+
+/**
+ * Get game modes by category
+ */
+export function getGameModesByCategory(category) {
+  return Object.values(GAME_MODES).filter(m => m.category === category);
+}
+
+/**
+ * Get DXCC (world) game modes
+ */
+export function getDxccModes() {
+  return getGameModesByCategory('dxcc');
+}
+
+/**
+ * Get Austria game modes
+ */
+export function getAustriaModes() {
+  return getGameModesByCategory('austria');
 }
 
 /**

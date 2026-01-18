@@ -26,11 +26,21 @@ export const TRANSLATIONS = {
     resetProgress: 'Fortschritt zur\u00FCcksetzen',
     language: 'Sprache',
 
-    // Game modes
+    // Game modes - DXCC
+    dxccModes: 'DXCC Weltweit',
     prefixToCountry: 'Prefix \u2192 Land',
     prefixToCountryDesc: 'Erkenne das Land anhand des Rufzeichen-Prefix',
     countryToPrefix: 'Land \u2192 Prefix',
     countryToPrefixDesc: 'Erkenne den Prefix anhand des Landes',
+
+    // Game modes - Austria
+    austriaModes: '\u{1F1E6}\u{1F1F9} \u00D6sterreich',
+    oePrefixToState: 'OE \u2192 Bundesland',
+    oePrefixToStateDesc: 'Erkenne das Bundesland anhand des OE-Prefix',
+    stateToOePrefix: 'Bundesland \u2192 OE',
+    stateToOePrefixDesc: 'Erkenne den OE-Prefix anhand des Bundeslandes',
+    whichStateUsesPrefix: 'Welches Bundesland verwendet "{prefix}"?',
+    whatPrefixForState: 'Welcher Prefix gilt f\u00FCr {state}?',
 
     // Game
     whatCountryUsesPrefix: 'Welches Land verwendet den Prefix "{prefix}"?',
@@ -174,11 +184,21 @@ export const TRANSLATIONS = {
     resetProgress: 'Reset Progress',
     language: 'Language',
 
-    // Game modes
+    // Game modes - DXCC
+    dxccModes: 'DXCC Worldwide',
     prefixToCountry: 'Prefix \u2192 Country',
     prefixToCountryDesc: 'Identify the country from a callsign prefix',
     countryToPrefix: 'Country \u2192 Prefix',
     countryToPrefixDesc: 'Identify the prefix from a country name',
+
+    // Game modes - Austria
+    austriaModes: '\u{1F1E6}\u{1F1F9} Austria',
+    oePrefixToState: 'OE \u2192 Federal State',
+    oePrefixToStateDesc: 'Identify the federal state from OE prefix',
+    stateToOePrefix: 'Federal State \u2192 OE',
+    stateToOePrefixDesc: 'Identify the OE prefix from federal state',
+    whichStateUsesPrefix: 'Which federal state uses "{prefix}"?',
+    whatPrefixForState: 'What is the prefix for {state}?',
 
     // Game
     whatCountryUsesPrefix: 'What country uses the prefix "{prefix}"?',

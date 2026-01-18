@@ -4,7 +4,7 @@
  */
 
 import { t, getLanguage, setLanguage, getAvailableLanguages } from '../i18n/translations.js';
-import { getGameModes } from '../models/game-state.js';
+import { getDxccModes, getAustriaModes } from '../models/game-state.js';
 
 /**
  * Menu Class
@@ -27,10 +27,24 @@ export class Menu {
   }
 
   /**
+   * Get translated mode name
+   */
+  getModeName(modeId) {
+    const names = {
+      'prefix-to-country': t('prefixToCountry'),
+      'country-to-prefix': t('countryToPrefix'),
+      'oe-prefix-to-state': t('oePrefixToState'),
+      'state-to-oe-prefix': t('stateToOePrefix')
+    };
+    return names[modeId] || modeId;
+  }
+
+  /**
    * Render the menu
    */
   render() {
-    const modes = getGameModes();
+    const dxccModes = getDxccModes();
+    const austriaModes = getAustriaModes();
     const languages = getAvailableLanguages();
     const currentLang = getLanguage();
 
@@ -51,15 +65,29 @@ export class Menu {
           </div>
         </div>
 
-        <!-- Game Mode Selector -->
+        <!-- DXCC World Modes -->
         <div class="menu-section">
-          <label class="menu-label">${t('gameMode')}</label>
+          <label class="menu-label">${t('dxccModes')}</label>
           <div class="mode-selector">
-            ${modes.map(mode => `
+            ${dxccModes.map(mode => `
               <button class="mode-btn ${mode.id === this.currentModeId ? 'active' : ''}"
                       data-mode="${mode.id}">
                 <span class="mode-icon">${mode.icon}</span>
-                <span class="mode-name">${mode.id === 'prefix-to-country' ? t('prefixToCountry') : t('countryToPrefix')}</span>
+                <span class="mode-name">${this.getModeName(mode.id)}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Austria Modes -->
+        <div class="menu-section">
+          <label class="menu-label">${t('austriaModes')}</label>
+          <div class="mode-selector">
+            ${austriaModes.map(mode => `
+              <button class="mode-btn ${mode.id === this.currentModeId ? 'active' : ''}"
+                      data-mode="${mode.id}">
+                <span class="mode-icon">${mode.icon}</span>
+                <span class="mode-name">${this.getModeName(mode.id)}</span>
               </button>
             `).join('')}
           </div>

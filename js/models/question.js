@@ -4,7 +4,11 @@
  */
 
 import { DXCC_ENTITIES, getRandomEntity, CONTINENT_GROUPS } from '../data/dxcc.js';
+import { AUSTRIA_STATES, getRandomState, initializeAustriaLookups } from '../data/austria.js';
 import { GAME_MODES } from './game-state.js';
+
+// Initialize Austria lookups
+initializeAustriaLookups();
 
 /**
  * Question class representing a single quiz question
@@ -41,6 +45,11 @@ export class QuestionGenerator {
   generate(mode, options = {}) {
     const { practiceMode = false, excludeRecent = [] } = options;
 
+    // Handle Austrian modes separately
+    if (mode.category === 'austria') {
+      return this.generateAustrianQuestion(mode, options);
+    }
+
     let targetEntity;
 
     // If practice mode and retry pool has items for this mode
@@ -63,6 +72,102 @@ export class QuestionGenerator {
       default:
         return this.generatePrefixToCountry(targetEntity, mode);
     }
+  }
+
+  /**
+   * Generate Austrian question
+   */
+  generateAustrianQuestion(mode, options = {}) {
+    const { practiceMode = false, excludeRecent = [] } = options;
+
+    let targetState;
+
+    // If practice mode
+    if (practiceMode && this.retryPool && this.retryPool.hasItems(mode.id)) {
+      const stateId = this.retryPool.getNext(mode.id);
+      targetState = AUSTRIA_STATES.find(s => s.id === stateId);
+    }
+
+    // Fall back to random
+    if (!targetState) {
+      targetState = getRandomState(excludeRecent);
+    }
+
+    switch (mode.id) {
+      case GAME_MODES.OE_PREFIX_TO_STATE.id:
+        return this.generateOEPrefixToState(targetState, mode);
+      case GAME_MODES.STATE_TO_OE_PREFIX.id:
+        return this.generateStateToOEPrefix(targetState, mode);
+      default:
+        return this.generateOEPrefixToState(targetState, mode);
+    }
+  }
+
+  /**
+   * Generate "OE Prefix -> Federal State" question
+   */
+  generateOEPrefixToState(state, mode) {
+    // Get distractors (other Austrian states)
+    const distractors = this.generateAustrianDistractors(state, 3);
+
+    // Create options
+    const options = [
+      { value: state.name, label: state.name },
+      ...distractors.map(d => ({ value: d.name, label: d.name }))
+    ];
+
+    this.shuffleArray(options);
+
+    return new Question({
+      mode,
+      prompt: `Welches Bundesland verwendet "${state.prefix}"?`,
+      correctAnswer: state.name,
+      options,
+      entityId: state.id,
+      metadata: {
+        prefix: state.prefix,
+        capital: state.capital,
+        icon: mode.icon
+      }
+    });
+  }
+
+  /**
+   * Generate "Federal State -> OE Prefix" question
+   */
+  generateStateToOEPrefix(state, mode) {
+    // Get distractors
+    const distractors = this.generateAustrianDistractors(state, 3);
+
+    // Create options
+    const options = [
+      { value: state.prefix, label: state.prefix },
+      ...distractors.map(d => ({ value: d.prefix, label: d.prefix }))
+    ];
+
+    this.shuffleArray(options);
+
+    return new Question({
+      mode,
+      prompt: `Welcher Prefix gilt für ${state.name}?`,
+      correctAnswer: state.prefix,
+      options,
+      entityId: state.id,
+      metadata: {
+        state: state.name,
+        capital: state.capital,
+        icon: mode.icon
+      }
+    });
+  }
+
+  /**
+   * Generate Austrian distractors
+   */
+  generateAustrianDistractors(correctState, count = 3) {
+    const available = AUSTRIA_STATES.filter(s => s.id !== correctState.id);
+    this.shuffleArray(available);
+    return available.slice(0, count);
   }
 
   /**
