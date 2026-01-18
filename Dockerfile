@@ -8,32 +8,20 @@ COPY index.html favicon.svg /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/css/
 COPY js/ /usr/share/nginx/html/js/
 
-# Nginx configuration with caching and compression
+# Nginx configuration - no caching for development
 RUN echo 'server { \
     listen 80; \
     server_name localhost; \
     root /usr/share/nginx/html; \
     index index.html; \
     \
-    # HTML: no cache for updates \
-    location = / { \
-        add_header Cache-Control "no-cache, no-store, must-revalidate"; \
-        try_files /index.html =404; \
-    } \
-    location ~* \.html$ { \
-        add_header Cache-Control "no-cache, no-store, must-revalidate"; \
-    } \
+    # Disable caching for all files \
+    add_header Cache-Control "no-cache, no-store, must-revalidate" always; \
+    add_header Pragma "no-cache" always; \
+    add_header Expires "0" always; \
     \
-    # JavaScript and CSS: cache for 7 days \
-    location ~* \.(js|css)$ { \
-        expires 7d; \
-        add_header Cache-Control "public"; \
-    } \
-    \
-    # Other static files \
-    location ~* \.(json|svg|png|jpg|ico)$ { \
-        expires 7d; \
-        add_header Cache-Control "public"; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
     } \
     \
     # Gzip compression \
