@@ -319,13 +319,8 @@ export function initI18n() {
   if (stored && TRANSLATIONS[stored]) {
     currentLanguage = stored;
   } else {
-    // Default to German, but check browser language
-    const browserLang = navigator.language?.substring(0, 2);
-    if (browserLang === 'en') {
-      currentLanguage = 'en';
-    } else {
-      currentLanguage = 'de';
-    }
+    // Default to German (user can switch to English manually)
+    currentLanguage = 'de';
   }
   return currentLanguage;
 }
