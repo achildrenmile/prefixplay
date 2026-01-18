@@ -6,6 +6,6 @@ services:
     container_name: prefixplay
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "3402:80"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
