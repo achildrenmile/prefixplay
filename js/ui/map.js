@@ -48,7 +48,7 @@ const PREFIX_TO_COUNTRY = {
   'OE5': 'Austria', 'OE6': 'Austria', 'OE7': 'Austria', 'OE8': 'Austria', 'OE9': 'Austria'
 };
 
-// Map German/local names to English names in countries.json
+// Map various names to English names in countries.json (110m)
 const NAME_TO_COUNTRY = {
   // German names from neighbors.js
   'deutschland': 'Germany',
@@ -58,12 +58,42 @@ const NAME_TO_COUNTRY = {
   'slowenien': 'Slovenia',
   'italien': 'Italy',
   'schweiz': 'Switzerland',
-  'liechtenstein': 'Liechtenstein',
   'österreich': 'Austria',
 
-  // English names (direct mapping)
-  'germany': 'Germany',
+  // DXCC names -> countries.json names (handle differences)
   'czech republic': 'Czechia',
+  'bosnia-herzegovina': 'Bosnia and Herz.',
+  'bosnia and herzegovina': 'Bosnia and Herz.',
+  'north macedonia': 'Macedonia',
+  'dr congo': 'Dem. Rep. Congo',
+  'democratic republic of congo': 'Dem. Rep. Congo',
+  'republic of congo': 'Congo',
+  'dominican republic': 'Dominican Rep.',
+  'equatorial guinea': 'Eq. Guinea',
+  'south sudan': 'S. Sudan',
+  'solomon islands': 'Solomon Is.',
+  'trinidad & tobago': 'Trinidad and Tobago',
+  'united states': 'United States of America',
+  'usa': 'United States of America',
+  'eswatini': 'eSwatini',
+  'ivory coast': "Côte d'Ivoire",
+  'cote d\'ivoire': "Côte d'Ivoire",
+  'central african republic': 'Central African Rep.',
+
+  // UK variants
+  'uk': 'United Kingdom',
+  'england': 'United Kingdom',
+  'great britain': 'United Kingdom',
+  'scotland': 'United Kingdom',
+  'wales': 'United Kingdom',
+  'northern ireland': 'United Kingdom',
+
+  // Russia variants
+  'european russia': 'Russia',
+  'asiatic russia': 'Russia',
+
+  // Direct mappings (same name)
+  'germany': 'Germany',
   'czechia': 'Czechia',
   'slovakia': 'Slovakia',
   'hungary': 'Hungary',
@@ -71,13 +101,6 @@ const NAME_TO_COUNTRY = {
   'italy': 'Italy',
   'switzerland': 'Switzerland',
   'austria': 'Austria',
-
-  // DXCC entity names
-  'united states': 'United States of America',
-  'usa': 'United States of America',
-  'uk': 'United Kingdom',
-  'england': 'United Kingdom',
-  'great britain': 'United Kingdom',
   'russia': 'Russia',
   'china': 'China',
   'japan': 'Japan',
@@ -115,7 +138,113 @@ const NAME_TO_COUNTRY = {
   'malaysia': 'Malaysia',
   'philippines': 'Philippines',
   'vietnam': 'Vietnam',
-  'new zealand': 'New Zealand'
+  'new zealand': 'New Zealand',
+  'taiwan': 'Taiwan',
+  'pakistan': 'Pakistan',
+  'bangladesh': 'Bangladesh',
+  'iran': 'Iran',
+  'iraq': 'Iraq',
+  'saudi arabia': 'Saudi Arabia',
+  'israel': 'Israel',
+  'jordan': 'Jordan',
+  'lebanon': 'Lebanon',
+  'syria': 'Syria',
+  'yemen': 'Yemen',
+  'oman': 'Oman',
+  'united arab emirates': 'United Arab Emirates',
+  'qatar': 'Qatar',
+  'kuwait': 'Kuwait',
+  'bahrain': 'Bahrain',
+  'cyprus': 'Cyprus',
+  'afghanistan': 'Afghanistan',
+  'kazakhstan': 'Kazakhstan',
+  'uzbekistan': 'Uzbekistan',
+  'turkmenistan': 'Turkmenistan',
+  'kyrgyzstan': 'Kyrgyzstan',
+  'tajikistan': 'Tajikistan',
+  'mongolia': 'Mongolia',
+  'myanmar': 'Myanmar',
+  'laos': 'Laos',
+  'cambodia': 'Cambodia',
+  'nepal': 'Nepal',
+  'sri lanka': 'Sri Lanka',
+  'algeria': 'Algeria',
+  'libya': 'Libya',
+  'tunisia': 'Tunisia',
+  'sudan': 'Sudan',
+  'ethiopia': 'Ethiopia',
+  'kenya': 'Kenya',
+  'tanzania': 'Tanzania',
+  'uganda': 'Uganda',
+  'nigeria': 'Nigeria',
+  'ghana': 'Ghana',
+  'senegal': 'Senegal',
+  'cameroon': 'Cameroon',
+  'angola': 'Angola',
+  'mozambique': 'Mozambique',
+  'zimbabwe': 'Zimbabwe',
+  'zambia': 'Zambia',
+  'botswana': 'Botswana',
+  'namibia': 'Namibia',
+  'madagascar': 'Madagascar',
+  'cuba': 'Cuba',
+  'haiti': 'Haiti',
+  'jamaica': 'Jamaica',
+  'costa rica': 'Costa Rica',
+  'panama': 'Panama',
+  'guatemala': 'Guatemala',
+  'honduras': 'Honduras',
+  'nicaragua': 'Nicaragua',
+  'el salvador': 'El Salvador',
+  'belize': 'Belize',
+  'ecuador': 'Ecuador',
+  'bolivia': 'Bolivia',
+  'paraguay': 'Paraguay',
+  'uruguay': 'Uruguay',
+  'guyana': 'Guyana',
+  'suriname': 'Suriname',
+  'papua new guinea': 'Papua New Guinea',
+  'fiji': 'Fiji',
+  'greenland': 'Greenland',
+  'iceland': 'Iceland'
+};
+
+// Small countries/territories that don't appear in 110m map (need markers)
+const SMALL_COUNTRY_COORDS = {
+  'liechtenstein': { lat: 47.16, lon: 9.55 },
+  'monaco': { lat: 43.73, lon: 7.42 },
+  'san marino': { lat: 43.94, lon: 12.46 },
+  'vatican': { lat: 41.90, lon: 12.45 },
+  'andorra': { lat: 42.51, lon: 1.52 },
+  'malta': { lat: 35.94, lon: 14.38 },
+  'luxembourg': { lat: 49.61, lon: 6.13 },
+  'singapore': { lat: 1.35, lon: 103.82 },
+  'bahrain': { lat: 26.07, lon: 50.55 },
+  'hong kong': { lat: 22.32, lon: 114.17 },
+  'macao': { lat: 22.20, lon: 113.55 },
+  'brunei': { lat: 4.54, lon: 114.73 },
+  'barbados': { lat: 13.19, lon: -59.54 },
+  'grenada': { lat: 12.12, lon: -61.68 },
+  'dominica': { lat: 15.41, lon: -61.34 },
+  'st. lucia': { lat: 13.91, lon: -60.98 },
+  'st. vincent': { lat: 13.25, lon: -61.20 },
+  'st. kitts & nevis': { lat: 17.36, lon: -62.78 },
+  'antigua & barbuda': { lat: 17.06, lon: -61.80 },
+  'mauritius': { lat: -20.35, lon: 57.55 },
+  'seychelles': { lat: -4.68, lon: 55.49 },
+  'maldives': { lat: 3.20, lon: 73.22 },
+  'comoros': { lat: -11.88, lon: 43.87 },
+  'cape verde': { lat: 16.00, lon: -24.01 },
+  'sao tome & principe': { lat: 0.19, lon: 6.61 },
+  'samoa': { lat: -13.76, lon: -172.10 },
+  'tonga': { lat: -21.18, lon: -175.20 },
+  'vanuatu': { lat: -17.73, lon: 168.32 },
+  'kiribati': { lat: 1.87, lon: -157.36 },
+  'nauru': { lat: -0.52, lon: 166.93 },
+  'tuvalu': { lat: -7.11, lon: 177.65 },
+  'palau': { lat: 7.51, lon: 134.58 },
+  'marshall islands': { lat: 7.13, lon: 171.18 },
+  'micronesia': { lat: 7.43, lon: 150.55 }
 };
 
 // Austrian Bundesländer data
@@ -327,6 +456,43 @@ export class WorldMap {
         ctx.fill();
         ctx.stroke();
       }
+    }
+
+    // Draw markers for small countries not in 110m map
+    if (options) {
+      const countryNamesInMap = new Set(this.countries.map(c => c.name.toLowerCase()));
+
+      options.forEach((opt, i) => {
+        const countryName = this.getCountryName(opt.value);
+        if (!countryName) return;
+
+        const nameLower = countryName.toLowerCase();
+
+        // If country was colored on map, skip marker
+        if (countryNamesInMap.has(nameLower)) return;
+
+        // Check if we have coordinates for this small country
+        const coords = SMALL_COUNTRY_COORDS[opt.value.toLowerCase()] ||
+                       SMALL_COUNTRY_COORDS[nameLower];
+        if (!coords) {
+          console.log('No coords for small country:', opt.value, nameLower);
+          return;
+        }
+
+        const pixel = this.latLonToPixel(coords.lat, coords.lon, bounds);
+        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
+
+        // Draw marker circle
+        ctx.beginPath();
+        ctx.arc(pixel.x, pixel.y, 12, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        console.log('Drew marker for:', opt.value, 'at', pixel.x, pixel.y);
+      });
     }
 
     // For Austria mode, draw state markers
