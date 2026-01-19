@@ -6,6 +6,9 @@
 import { t } from '../i18n/translations.js';
 import { getMap } from './map.js';
 
+// Same colors as in map.js for consistency
+const QUIZ_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f97316'];
+
 /**
  * Game Card Class
  */
@@ -39,6 +42,7 @@ export class GameCard {
         <div class="card-options">
           ${question.options.map((opt, i) => `
             <button class="option-btn" data-index="${i}" data-value="${this.escapeHtml(opt.value)}">
+              <span class="color-indicator" style="background-color: ${QUIZ_COLORS[i % QUIZ_COLORS.length]}"></span>
               ${opt.flag ? `<span class="flag">${opt.flag}</span>` : ''}
               <span class="option-text">${this.escapeHtml(opt.label)}</span>
             </button>

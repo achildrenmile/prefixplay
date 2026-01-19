@@ -431,6 +431,14 @@ button {
   flex: 1;
 }
 
+.option-btn .color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
 .option-btn.correct {
   border-color: var(--accent-green);
   background: rgba(34, 197, 94, 0.2);
