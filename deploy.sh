@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # PrefixPlay Deployment Script
-# Run this script ON the Synology: ./deploy.sh
+# Run this script ON the Synology: ./deploy.sh [--rebuild]
 
 set -e
 
@@ -11,6 +11,13 @@ cd "$SCRIPT_DIR"
 CONTAINER_NAME="prefixplay"
 IMAGE_NAME="prefixplay:latest"
 PORT="3402:80"
+
+# Check for --rebuild flag
+BUILD_FLAGS=""
+if [ "$1" = "--rebuild" ]; then
+  BUILD_FLAGS="--no-cache"
+  echo "Rebuild mode: Docker cache will be ignored"
+fi
 
 echo "=========================================="
 echo "PrefixPlay Deployment"
@@ -22,7 +29,7 @@ git pull
 
 echo ""
 echo "[2/3] Building Docker image..."
-/usr/local/bin/docker build --no-cache -t $IMAGE_NAME .
+/usr/local/bin/docker build $BUILD_FLAGS -t $IMAGE_NAME .
 
 echo ""
 echo "[3/3] Restarting container..."
