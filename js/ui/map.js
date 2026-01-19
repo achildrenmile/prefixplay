@@ -409,9 +409,14 @@ export class WorldMap {
     ctx.fillStyle = '#1e3a5f';
     ctx.fillRect(0, 0, this.width, this.height);
 
+    // Track centroids for highlighted countries to draw markers
+    const countryCentroids = new Map();
+    const countryNamesInMap = new Set();
+
     // Draw all countries
     for (const country of this.countries) {
       const nameLower = country.name.toLowerCase();
+      countryNamesInMap.add(nameLower);
       const isHighlighted = colorMap.has(nameLower);
 
       if (isHighlighted) {
@@ -423,6 +428,9 @@ export class WorldMap {
         ctx.strokeStyle = '#475569';
         ctx.lineWidth = 0.5;
       }
+
+      // Track points for centroid calculation
+      let sumX = 0, sumY = 0, pointCount = 0;
 
       for (const ring of country.rings) {
         if (ring.length < 3) continue;
@@ -451,47 +459,61 @@ export class WorldMap {
             ctx.lineTo(pixel.x, pixel.y);
           }
           prevX = pixel.x;
+
+          // Accumulate for centroid
+          if (isHighlighted && pixel.x >= 0 && pixel.x <= this.width && pixel.y >= 0 && pixel.y <= this.height) {
+            sumX += pixel.x;
+            sumY += pixel.y;
+            pointCount++;
+          }
         }
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
       }
+
+      // Store centroid for highlighted countries
+      if (isHighlighted && pointCount > 0) {
+        countryCentroids.set(nameLower, { x: sumX / pointCount, y: sumY / pointCount });
+      }
     }
 
-    // Draw markers for small countries not in 110m map
+    // Draw circular markers for all answer options
     if (options) {
-      const countryNamesInMap = new Set(this.countries.map(c => c.name.toLowerCase()));
-
       options.forEach((opt, i) => {
         const countryName = this.getCountryName(opt.value);
         if (!countryName) return;
 
         const nameLower = countryName.toLowerCase();
+        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
+        let pixel = null;
 
-        // If country was colored on map, skip marker
-        if (countryNamesInMap.has(nameLower)) return;
+        // Try to get centroid from drawn country
+        if (countryCentroids.has(nameLower)) {
+          pixel = countryCentroids.get(nameLower);
+        }
+        // Try small country coordinates
+        else {
+          const coords = SMALL_COUNTRY_COORDS[opt.value.toLowerCase()] ||
+                         SMALL_COUNTRY_COORDS[nameLower];
+          if (coords) {
+            pixel = this.latLonToPixel(coords.lat, coords.lon, bounds);
+          }
+        }
 
-        // Check if we have coordinates for this small country
-        const coords = SMALL_COUNTRY_COORDS[opt.value.toLowerCase()] ||
-                       SMALL_COUNTRY_COORDS[nameLower];
-        if (!coords) {
-          console.log('No coords for small country:', opt.value, nameLower);
+        if (!pixel) {
+          console.log('No position for:', opt.value, nameLower);
           return;
         }
 
-        const pixel = this.latLonToPixel(coords.lat, coords.lon, bounds);
-        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
-
-        // Draw marker circle
+        // Draw marker circle matching the button indicator
         ctx.beginPath();
-        ctx.arc(pixel.x, pixel.y, 12, 0, Math.PI * 2);
+        ctx.arc(pixel.x, pixel.y, 10, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.stroke();
-
-        console.log('Drew marker for:', opt.value, 'at', pixel.x, pixel.y);
       });
     }
 
