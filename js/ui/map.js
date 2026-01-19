@@ -348,7 +348,7 @@ const SMALL_COUNTRY_COORDS = {
   'amsterdam & st. paul islands': { lat: -37.83, lon: 77.52 }
 };
 
-// Austrian Bundesländer data
+// Austrian Bundesländer data - maps OE prefix to state info
 const AUSTRIA_STATES = {
   'OE1': { name: 'Wien', lat: 48.21, lon: 16.37 },
   'OE2': { name: 'Salzburg', lat: 47.80, lon: 13.04 },
@@ -359,6 +359,19 @@ const AUSTRIA_STATES = {
   'OE7': { name: 'Tirol', lat: 47.26, lon: 11.39 },
   'OE8': { name: 'Kärnten', lat: 46.62, lon: 14.31 },
   'OE9': { name: 'Vorarlberg', lat: 47.25, lon: 9.90 }
+};
+
+// Maps state names to OE prefixes (for GeoJSON matching)
+const STATE_NAME_TO_PREFIX = {
+  'wien': 'OE1',
+  'salzburg': 'OE2',
+  'niederösterreich': 'OE3',
+  'burgenland': 'OE4',
+  'oberösterreich': 'OE5',
+  'steiermark': 'OE6',
+  'tirol': 'OE7',
+  'kärnten': 'OE8',
+  'vorarlberg': 'OE9'
 };
 
 // Bright colors for the 4 answer options
@@ -375,6 +388,7 @@ export class WorldMap {
     this.height = 450;
     this.countries = null;
     this.decodedArcs = null;
+    this.austriaStates = null;
     this.loaded = false;
   }
 
@@ -383,8 +397,22 @@ export class WorldMap {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.ctx = this.canvas.getContext('2d');
-    await this.loadCountries();
+    await Promise.all([
+      this.loadCountries(),
+      this.loadAustriaStates()
+    ]);
     this.loaded = true;
+  }
+
+  async loadAustriaStates() {
+    try {
+      const response = await fetch('austria-states.json');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      this.austriaStates = await response.json();
+      console.log('Austria states loaded:', this.austriaStates.features.length, 'states');
+    } catch (error) {
+      console.error('Failed to load Austria states:', error);
+    }
   }
 
   async loadCountries() {
@@ -479,6 +507,121 @@ export class WorldMap {
     return v;
   }
 
+  /**
+   * Render Austria map with colored Bundesländer
+   */
+  renderAustriaQuiz(options) {
+    const ctx = this.ctx;
+    const bounds = { minLat: 46.3, maxLat: 49.1, minLon: 9.4, maxLon: 17.2 };
+
+    // Build color map: OE prefix or state name -> color
+    const colorMap = new Map();
+    if (options) {
+      options.forEach((opt, i) => {
+        const value = opt.value;
+        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
+
+        // If it's an OE prefix, get the state name
+        if (AUSTRIA_STATES[value]) {
+          colorMap.set(AUSTRIA_STATES[value].name.toLowerCase(), { color, prefix: value });
+        } else {
+          // It's a state name directly
+          colorMap.set(value.toLowerCase(), { color, prefix: null });
+        }
+      });
+    }
+
+    // Draw background
+    ctx.fillStyle = '#1e3a5f';
+    ctx.fillRect(0, 0, this.width, this.height);
+
+    // Track centroids for markers
+    const stateCentroids = new Map();
+
+    // Draw each Austrian state
+    for (const feature of this.austriaStates.features) {
+      const stateName = feature.properties.name.toLowerCase();
+      const highlighted = colorMap.get(stateName);
+
+      if (highlighted) {
+        ctx.fillStyle = highlighted.color;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+      } else {
+        ctx.fillStyle = '#334155';
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1;
+      }
+
+      let sumX = 0, sumY = 0, pointCount = 0;
+
+      // Handle MultiPolygon and Polygon
+      const polygons = feature.geometry.type === 'MultiPolygon'
+        ? feature.geometry.coordinates
+        : [feature.geometry.coordinates];
+
+      for (const polygon of polygons) {
+        for (const ring of polygon) {
+          ctx.beginPath();
+          let first = true;
+
+          for (const coord of ring) {
+            const [lon, lat] = coord;
+            const pixel = this.latLonToPixel(lat, lon, bounds);
+
+            if (first) {
+              ctx.moveTo(pixel.x, pixel.y);
+              first = false;
+            } else {
+              ctx.lineTo(pixel.x, pixel.y);
+            }
+
+            if (highlighted) {
+              sumX += pixel.x;
+              sumY += pixel.y;
+              pointCount++;
+            }
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      // Store centroid for markers
+      if (highlighted && pointCount > 0) {
+        stateCentroids.set(stateName, {
+          x: sumX / pointCount,
+          y: sumY / pointCount,
+          color: highlighted.color,
+          prefix: highlighted.prefix || STATE_NAME_TO_PREFIX[stateName]
+        });
+      }
+    }
+
+    // Draw markers at state centroids
+    for (const [stateName, data] of stateCentroids) {
+      ctx.beginPath();
+      ctx.arc(data.x, data.y, 14, 0, Math.PI * 2);
+      ctx.fillStyle = data.color;
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw prefix label
+      if (data.prefix) {
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(data.prefix, data.x, data.y);
+      }
+    }
+
+    return this.canvas;
+  }
+
   renderQuiz(question, options) {
     if (!this.ctx || !this.countries) return this.canvas;
     const ctx = this.ctx;
@@ -487,10 +630,13 @@ export class WorldMap {
     const isAustriaMode = mode?.category === 'austria';
     const isNeighborMode = mode?.category === 'neighbors';
 
+    // For Austria mode, render Austrian states map
+    if (isAustriaMode && this.austriaStates) {
+      return this.renderAustriaQuiz(options);
+    }
+
     let bounds = null;
-    if (isAustriaMode) {
-      bounds = { minLat: 45.5, maxLat: 50.0, minLon: 8.5, maxLon: 18.0 };
-    } else if (isNeighborMode) {
+    if (isNeighborMode) {
       bounds = { minLat: 42.0, maxLat: 56.0, minLon: 4.0, maxLon: 26.0 };
     }
 
@@ -501,7 +647,6 @@ export class WorldMap {
         const countryName = this.getCountryName(opt.value);
         if (countryName) {
           colorMap.set(countryName.toLowerCase(), QUIZ_COLORS[i % QUIZ_COLORS.length]);
-          console.log('Mapping:', opt.value, '->', countryName, '->', QUIZ_COLORS[i % QUIZ_COLORS.length]);
         }
       });
     }
@@ -615,31 +760,6 @@ export class WorldMap {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.stroke();
-      });
-    }
-
-    // For Austria mode, draw state markers
-    if (isAustriaMode && options) {
-      options.forEach((opt, i) => {
-        const state = AUSTRIA_STATES[opt.value];
-        if (!state) return;
-
-        const pixel = this.latLonToPixel(state.lat, state.lon, bounds);
-        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
-
-        ctx.beginPath();
-        ctx.arc(pixel.x, pixel.y, 15, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.font = 'bold 10px sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(opt.value, pixel.x, pixel.y);
       });
     }
 
