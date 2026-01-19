@@ -41,7 +41,7 @@ export class GameCard {
         </div>
         <div class="card-options">
           ${question.options.map((opt, i) => {
-            const showColorIndicator = question.mode?.category !== 'austria';
+            const showColorIndicator = question.mode?.category !== 'austria' && question.mode?.category !== 'neighbors';
             return `
             <button class="option-btn" data-index="${i}" data-value="${this.escapeHtml(opt.value)}">
               ${showColorIndicator ? `<span class="color-indicator" style="background-color: ${QUIZ_COLORS[i % QUIZ_COLORS.length]}"></span>` : ''}
