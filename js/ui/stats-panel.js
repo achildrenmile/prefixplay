@@ -68,6 +68,13 @@ export class StatsPanel {
         ` : ''}
 
         ${this.renderStreakIndicator(stats.global.currentStreak)}
+
+        <div class="help-link">
+          <a href="dxcc-list.html" class="help-link-btn">
+            <span class="help-icon">\u{2753}</span>
+            <span>Präfix-Übersicht</span>
+          </a>
+        </div>
       </div>
     `;
 
