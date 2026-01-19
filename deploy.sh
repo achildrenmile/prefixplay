@@ -1,51 +1,86 @@
 #!/bin/bash
-# PrefixPlay Deployment Script
-# Usage: ./deploy.sh [remote-host]
+
+# Deploy prefixplay to Synology NAS
+# Usage: ./deploy.sh [--rebuild]
 
 set -e
 
-# Configuration
-IMAGE_NAME="prefixplay"
-CONTAINER_NAME="prefixplay"
-REMOTE_PORT=3402
-REMOTE_PATH="/volume1/docker/prefixplay"
+# Parse arguments
+DOCKER_BUILD_FLAGS=""
+if [ "$1" = "--rebuild" ]; then
+  DOCKER_BUILD_FLAGS="--no-cache"
+  echo "Rebuild mode: Docker cache will be ignored"
+fi
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo -e "${GREEN}=== PrefixPlay Deployment ===${NC}"
-
-# Check if deploying locally or to remote
-if [ -n "$1" ]; then
-    REMOTE_HOST="$1"
-    echo -e "${YELLOW}Deploying to remote host: ${REMOTE_HOST}${NC}"
-
-    # Pull latest changes and rebuild on remote using docker-compose
-    echo -e "${GREEN}Pulling latest changes and rebuilding on remote...${NC}"
-    ssh ${REMOTE_HOST} "
-        export PATH=/usr/local/bin:\$PATH && \
-        cd ${REMOTE_PATH} && \
-        git pull && \
-        docker-compose down && \
-        docker-compose build --no-cache && \
-        docker-compose up -d && \
-        echo 'Deployment complete!'
-    "
-
-    echo -e "${GREEN}=== Deployment to ${REMOTE_HOST} complete ===${NC}"
-    echo -e "Access the app at: https://prefixplay.oeradio.at"
+# Load environment variables
+if [ -f "$SCRIPT_DIR/.env.production" ]; then
+  export $(grep -v '^#' "$SCRIPT_DIR/.env.production" | xargs)
 else
-    # Local deployment
-    echo -e "${YELLOW}Deploying locally...${NC}"
+  echo "ERROR: .env.production not found"
+  exit 1
+fi
 
-    # Build and run using docker-compose
-    echo -e "${GREEN}Building and starting with docker-compose...${NC}"
-    docker-compose down 2>/dev/null || true
-    docker-compose up -d --build
+echo "=========================================="
+echo "Deploying $CONTAINER_NAME to Synology"
+echo "=========================================="
 
-    echo -e "${GREEN}=== Local deployment complete ===${NC}"
-    echo -e "Access the app at: http://localhost:${REMOTE_PORT}"
+# Step 1: Pull latest changes on Synology
+echo ""
+echo "[1/3] Pulling latest changes..."
+if ssh $SYNOLOGY_HOST "[ -d $REMOTE_DIR ]"; then
+  ssh $SYNOLOGY_HOST "cd $REMOTE_DIR && git pull"
+else
+  echo "Directory does not exist, cloning repository..."
+  ssh $SYNOLOGY_HOST "git clone https://github.com/achildrenmile/prefixplay.git $REMOTE_DIR"
+fi
+
+# Step 2: Build Docker image on Synology
+echo ""
+echo "[2/3] Building Docker image..."
+ssh $SYNOLOGY_HOST "/usr/local/bin/docker build $DOCKER_BUILD_FLAGS -t $IMAGE_NAME $REMOTE_DIR"
+
+# Step 3: Restart container
+echo ""
+echo "[3/3] Restarting container..."
+ssh $SYNOLOGY_HOST "/usr/local/bin/docker stop $CONTAINER_NAME 2>/dev/null || true"
+ssh $SYNOLOGY_HOST "/usr/local/bin/docker rm $CONTAINER_NAME 2>/dev/null || true"
+
+ssh $SYNOLOGY_HOST "/usr/local/bin/docker run -d \
+  --name $CONTAINER_NAME \
+  --restart unless-stopped \
+  -p $CONTAINER_PORT \
+  --health-cmd='wget -q -O /dev/null http://localhost:80/ || exit 1' \
+  --health-interval=30s \
+  --health-timeout=10s \
+  --health-retries=3 \
+  --health-start-period=10s \
+  $IMAGE_NAME"
+
+# Verify
+echo ""
+echo "[Verify] Checking deployment..."
+sleep 3
+
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$SITE_URL" 2>/dev/null || echo "000")
+
+if [ "$HTTP_CODE" = "200" ]; then
+  echo ""
+  echo "=========================================="
+  echo "Deployment successful!"
+  echo "$SITE_URL is responding (HTTP $HTTP_CODE)"
+  echo "=========================================="
+else
+  # Check local port
+  LOCAL_CHECK=$(ssh $SYNOLOGY_HOST "curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:3402/" 2>/dev/null || echo "000")
+  echo ""
+  echo "Local container check: HTTP $LOCAL_CHECK"
+  echo "Public URL check: HTTP $HTTP_CODE"
+  if [ "$LOCAL_CHECK" = "200" ]; then
+    echo "Container is running. Cloudflare tunnel may need configuration."
+  else
+    echo "WARNING: Container may not be healthy"
+    echo "Check logs: ssh $SYNOLOGY_HOST '/usr/local/bin/docker logs $CONTAINER_NAME'"
+  fi
 fi
