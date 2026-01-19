@@ -524,8 +524,16 @@ button {
 /* ===== Map Display ===== */
 .card-map {
   margin-bottom: var(--spacing-md);
-  min-height: 150px;
-  background: var(--bg-tertiary);
+  min-height: 200px;
+  background: #1e3a5f;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.card-map canvas {
+  display: block;
+  width: 100%;
+  height: auto;
   border-radius: var(--radius-md);
 }
 
@@ -1128,6 +1136,122 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ===== Lookup Tables ===== */
+.lookup-tables {
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.lookup-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.lookup-section h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: 1rem;
+}
+
+.lookup-input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.lookup-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.lookup-result {
+  margin-top: var(--spacing-sm);
+  min-height: 40px;
+}
+
+.result-found {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-flag {
+  font-size: 1.5rem;
+}
+
+.result-prefix {
+  font-weight: bold;
+  color: var(--accent-color);
+  font-family: monospace;
+}
+
+.result-name {
+  color: var(--text-primary);
+}
+
+.result-continent {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.result-not-found {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--spacing-sm);
+}
+
+.lookup-examples h4 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-size: 0.95rem;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: var(--spacing-sm);
+}
+
+.example-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.example-flag {
+  font-size: 1.2rem;
+}
+
+.example-prefix {
+  font-weight: bold;
+  color: var(--accent-color);
+  font-family: monospace;
+  min-width: 30px;
+}
+
+.example-country {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ===== Print ===== */

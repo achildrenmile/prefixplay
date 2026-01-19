@@ -71,7 +71,8 @@ export class GameCard {
 
     try {
       const map = await getMap();
-      map.renderTo(mapContainer, question.entityId, question.mode);
+      // Use new quiz rendering with colored options
+      map.renderQuizTo(mapContainer, question, question.options);
     } catch (error) {
       console.error('Failed to render map:', error);
       mapContainer.style.display = 'none';
