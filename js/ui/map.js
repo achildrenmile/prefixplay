@@ -599,24 +599,15 @@ export class WorldMap {
       }
     }
 
-    // Draw markers at state centroids
+    // Draw markers at state centroids (circles only, no labels)
     for (const [stateName, data] of stateCentroids) {
       ctx.beginPath();
-      ctx.arc(data.x, data.y, 14, 0, Math.PI * 2);
+      ctx.arc(data.x, data.y, 10, 0, Math.PI * 2);
       ctx.fillStyle = data.color;
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.stroke();
-
-      // Draw prefix label
-      if (data.prefix) {
-        ctx.font = 'bold 10px sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(data.prefix, data.x, data.y);
-      }
     }
 
     return this.canvas;
