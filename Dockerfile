@@ -4,7 +4,7 @@
 FROM nginx:alpine
 
 # Copy static files
-COPY index.html favicon.svg world.json /usr/share/nginx/html/
+COPY index.html favicon.svg countries.json /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/css/
 COPY js/ /usr/share/nginx/html/js/
 
