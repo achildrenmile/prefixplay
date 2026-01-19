@@ -3,7 +3,7 @@
  * Interactive world map with country coloring
  */
 
-// Mapping from amateur radio prefixes to country names (as in countries.json)
+// Mapping from amateur radio prefixes to country names (exact match with countries.json)
 const PREFIX_TO_COUNTRY_NAME = {
   // Europe
   'OE': 'Austria',
@@ -16,7 +16,6 @@ const PREFIX_TO_COUNTRY_NAME = {
   'PA': 'Netherlands',
   'ON': 'Belgium',
   'HB': 'Switzerland',
-  'HB0': 'Liechtenstein',
   'SP': 'Poland',
   'OK': 'Czechia',
   'OM': 'Slovakia',
@@ -44,6 +43,9 @@ const PREFIX_TO_COUNTRY_NAME = {
   'LY': 'Lithuania',
   'ER': 'Moldova',
   'TA': 'Turkey',
+  'TF': 'Iceland',
+  '5B': 'Cyprus',
+  'EU': 'Belarus',
 
   // North America
   'K': 'United States of America',
@@ -51,6 +53,20 @@ const PREFIX_TO_COUNTRY_NAME = {
   'N': 'United States of America',
   'VE': 'Canada',
   'XE': 'Mexico',
+
+  // Central America & Caribbean
+  'TI': 'Costa Rica',
+  'HP': 'Panama',
+  'YN': 'Nicaragua',
+  'HR': 'Honduras',
+  'YS': 'El Salvador',
+  'TG': 'Guatemala',
+  'V3': 'Belize',
+  'CO': 'Cuba',
+  '6Y': 'Jamaica',
+  'HI': 'Dominican Rep.',
+  'HH': 'Haiti',
+  '9Y': 'Trinidad and Tobago',
 
   // South America
   'PY': 'Brazil',
@@ -63,13 +79,16 @@ const PREFIX_TO_COUNTRY_NAME = {
   'CP': 'Bolivia',
   'ZP': 'Paraguay',
   'CX': 'Uruguay',
+  '8R': 'Guyana',
+  'PZ': 'Suriname',
 
   // Asia
   'JA': 'Japan',
   'BY': 'China',
+  'BV': 'Taiwan',
   'VU': 'India',
   'HL': 'South Korea',
-  'BV': 'Taiwan',
+  'P5': 'North Korea',
   'HS': 'Thailand',
   'YB': 'Indonesia',
   '9M': 'Malaysia',
@@ -83,13 +102,20 @@ const PREFIX_TO_COUNTRY_NAME = {
   'S2': 'Bangladesh',
   '4S': 'Sri Lanka',
   '9N': 'Nepal',
+  'A5': 'Bhutan',
+  'JT': 'Mongolia',
+  'UN': 'Kazakhstan',
+  'UK': 'Uzbekistan',
+  'EX': 'Kyrgyzstan',
+  'EY': 'Tajikistan',
+  'EZ': 'Turkmenistan',
+  'YA': 'Afghanistan',
 
   // Middle East
   'HZ': 'Saudi Arabia',
   'A4': 'Oman',
   'A6': 'United Arab Emirates',
   'A7': 'Qatar',
-  'A9': 'Bahrain',
   '9K': 'Kuwait',
   'YI': 'Iraq',
   'EP': 'Iran',
@@ -97,6 +123,10 @@ const PREFIX_TO_COUNTRY_NAME = {
   'JY': 'Jordan',
   '4X': 'Israel',
   'YK': 'Syria',
+  '7O': 'Yemen',
+  '4L': 'Georgia',
+  'EK': 'Armenia',
+  '4J': 'Azerbaijan',
 
   // Africa
   'ZS': 'South Africa',
@@ -115,35 +145,69 @@ const PREFIX_TO_COUNTRY_NAME = {
   'A2': 'Botswana',
   'V5': 'Namibia',
   '9Q': 'Dem. Rep. Congo',
+  'TN': 'Congo',
   'C9': 'Mozambique',
   '5R': 'Madagascar',
+  '9X': 'Rwanda',
+  '9U': 'Burundi',
+  '5X': 'Uganda',
+  'E3': 'Eritrea',
+  'J2': 'Djibouti',
+  '6O': 'Somalia',
+  'TJ': 'Cameroon',
+  'TL': 'Central African Rep.',
+  'TT': 'Chad',
+  '5T': 'Mauritania',
+  'TZ': 'Mali',
+  '5U': 'Niger',
+  'XT': 'Burkina Faso',
+  '6W': 'Senegal',
+  'C5': 'Gambia',
+  '3X': 'Guinea',
+  'J5': 'Guinea-Bissau',
+  '9L': 'Sierra Leone',
+  'EL': 'Liberia',
+  'TU': "Côte d'Ivoire",
+  '9G': 'Ghana',
+  '5V': 'Togo',
+  'TY': 'Benin',
+  'TR': 'Gabon',
+  '3C': 'Eq. Guinea',
+  '9L': 'Sierra Leone',
+  '7P': 'Lesotho',
+  '3DA': 'eSwatini',
+  '7Q': 'Malawi',
+  'D2': 'Angola',
 
   // Oceania
   'VK': 'Australia',
   'ZL': 'New Zealand',
   'P2': 'Papua New Guinea',
   '3D2': 'Fiji',
+  'YJ': 'Vanuatu',
+  'H4': 'Solomon Is.',
+  'FK': 'New Caledonia',
 
-  // Austrian states (special handling)
+  // Austrian states (all map to Austria)
   'OE1': 'Austria', 'OE2': 'Austria', 'OE3': 'Austria',
   'OE4': 'Austria', 'OE5': 'Austria', 'OE6': 'Austria',
   'OE7': 'Austria', 'OE8': 'Austria', 'OE9': 'Austria'
 };
 
 // Austrian Bundesländer data
-export const AUSTRIA_STATES = {
-  'OE1': { name: 'Wien', nameEn: 'Vienna', lat: 48.21, lon: 16.37 },
-  'OE2': { name: 'Salzburg', nameEn: 'Salzburg', lat: 47.80, lon: 13.04 },
-  'OE3': { name: 'Niederösterreich', nameEn: 'Lower Austria', lat: 48.20, lon: 15.63 },
-  'OE4': { name: 'Burgenland', nameEn: 'Burgenland', lat: 47.85, lon: 16.53 },
-  'OE5': { name: 'Oberösterreich', nameEn: 'Upper Austria', lat: 48.31, lon: 14.29 },
-  'OE6': { name: 'Steiermark', nameEn: 'Styria', lat: 47.07, lon: 15.44 },
-  'OE7': { name: 'Tirol', nameEn: 'Tyrol', lat: 47.26, lon: 11.39 },
-  'OE8': { name: 'Kärnten', nameEn: 'Carinthia', lat: 46.62, lon: 14.31 },
-  'OE9': { name: 'Vorarlberg', nameEn: 'Vorarlberg', lat: 47.25, lon: 9.90 }
+const AUSTRIA_STATES = {
+  'OE1': { name: 'Wien', lat: 48.21, lon: 16.37 },
+  'OE2': { name: 'Salzburg', lat: 47.80, lon: 13.04 },
+  'OE3': { name: 'Niederösterreich', lat: 48.20, lon: 15.63 },
+  'OE4': { name: 'Burgenland', lat: 47.85, lon: 16.53 },
+  'OE5': { name: 'Oberösterreich', lat: 48.31, lon: 14.29 },
+  'OE6': { name: 'Steiermark', lat: 47.07, lon: 15.44 },
+  'OE7': { name: 'Tirol', lat: 47.26, lon: 11.39 },
+  'OE8': { name: 'Kärnten', lat: 46.62, lon: 14.31 },
+  'OE9': { name: 'Vorarlberg', lat: 47.25, lon: 9.90 }
 };
 
-// Color palette for quiz options
+// Color palette for quiz options - bright, distinct colors
 const QUIZ_COLORS = [
   '#ef4444', // red
   '#3b82f6', // blue
@@ -180,7 +244,6 @@ export class WorldMap {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const topo = await response.json();
 
-      // Decode arcs
       const transform = topo.transform;
       this.decodedArcs = topo.arcs.map(arc => {
         const coords = [];
@@ -195,12 +258,10 @@ export class WorldMap {
         return coords;
       });
 
-      // Parse countries
       this.countries = topo.objects.countries.geometries.map(geom => ({
         name: geom.properties?.name || '',
         id: geom.id,
         type: geom.type,
-        arcs: geom.arcs,
         rings: this.extractRings(geom)
       }));
 
@@ -252,23 +313,16 @@ export class WorldMap {
     return { x, y };
   }
 
-  /**
-   * Get country name from prefix
-   */
   getCountryName(prefix) {
     if (!prefix) return null;
     const p = String(prefix).toUpperCase();
     return PREFIX_TO_COUNTRY_NAME[p] || null;
   }
 
-  /**
-   * Render quiz map with colored countries
-   */
   renderQuiz(question, options) {
     if (!this.ctx || !this.countries) return this.canvas;
     const ctx = this.ctx;
 
-    // Determine view bounds
     const mode = question?.mode;
     const isAustriaMode = mode?.category === 'austria';
     const isNeighborMode = mode?.category === 'neighbors';
@@ -295,12 +349,11 @@ export class WorldMap {
     ctx.fillStyle = '#1e3a5f';
     ctx.fillRect(0, 0, this.width, this.height);
 
-    // Draw countries
+    // Draw all countries
     for (const country of this.countries) {
       const countryNameLower = country.name.toLowerCase();
       const isHighlighted = colorMap.has(countryNameLower);
 
-      // Set color
       if (isHighlighted) {
         ctx.fillStyle = colorMap.get(countryNameLower);
         ctx.strokeStyle = '#ffffff';
@@ -311,7 +364,6 @@ export class WorldMap {
         ctx.lineWidth = 0.5;
       }
 
-      // Draw country polygons
       for (const ring of country.rings) {
         if (ring.length < 3) continue;
 
@@ -320,7 +372,6 @@ export class WorldMap {
         let prevX = null;
 
         for (const [lon, lat] of ring) {
-          // Skip points outside bounds for regional views
           if (bounds) {
             if (lat < bounds.minLat - 10 || lat > bounds.maxLat + 10 ||
                 lon < bounds.minLon - 20 || lon > bounds.maxLon + 20) continue;
@@ -328,7 +379,6 @@ export class WorldMap {
 
           const pixel = this.latLonToPixel(lat, lon, bounds);
 
-          // Handle date line crossing
           if (prevX !== null && Math.abs(pixel.x - prevX) > this.width / 2) {
             ctx.closePath();
             ctx.fill();
@@ -349,138 +399,38 @@ export class WorldMap {
         ctx.fill();
         ctx.stroke();
       }
-
-      // Draw label for highlighted countries
-      if (isHighlighted && options) {
-        const opt = options.find(o => this.getCountryName(o.value)?.toLowerCase() === countryNameLower);
-        if (opt) {
-          const center = this.getCountryCenter(country, bounds);
-          if (center) {
-            this.drawLabel(ctx, center.x, center.y, opt.value, colorMap.get(countryNameLower));
-          }
-        }
-      }
     }
 
-    // For Austria mode, draw state labels
+    // For Austria mode, draw state markers with labels
     if (isAustriaMode && options) {
-      this.drawAustriaStateLabels(ctx, bounds, options);
-    }
+      options.forEach((opt, i) => {
+        const state = AUSTRIA_STATES[opt.value];
+        if (!state) return;
 
-    // Draw legend
-    this.drawLegend(ctx, options);
+        const pixel = this.latLonToPixel(state.lat, state.lon, bounds);
+        const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
+
+        // Draw colored circle marker
+        ctx.beginPath();
+        ctx.arc(pixel.x, pixel.y, 15, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw prefix text inside circle
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(opt.value, pixel.x, pixel.y);
+      });
+    }
 
     return this.canvas;
   }
 
-  getCountryCenter(country, bounds) {
-    if (!country.rings || country.rings.length === 0) return null;
-
-    // Use first ring's centroid
-    const ring = country.rings[0];
-    if (ring.length === 0) return null;
-
-    let sumLat = 0, sumLon = 0;
-    for (const [lon, lat] of ring) {
-      sumLat += lat;
-      sumLon += lon;
-    }
-    const avgLat = sumLat / ring.length;
-    const avgLon = sumLon / ring.length;
-
-    return this.latLonToPixel(avgLat, avgLon, bounds);
-  }
-
-  drawAustriaStateLabels(ctx, bounds, options) {
-    options.forEach((opt, i) => {
-      const state = AUSTRIA_STATES[opt.value];
-      if (!state) return;
-
-      const pixel = this.latLonToPixel(state.lat, state.lon, bounds);
-      const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
-
-      // Draw marker
-      ctx.beginPath();
-      ctx.arc(pixel.x, pixel.y, 12, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Draw label
-      this.drawLabel(ctx, pixel.x, pixel.y - 20, opt.value, color);
-
-      // Draw state name
-      ctx.font = '10px sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.fillText(state.name, pixel.x, pixel.y + 25);
-    });
-  }
-
-  drawLabel(ctx, x, y, text, bgColor) {
-    ctx.font = 'bold 12px monospace';
-    const metrics = ctx.measureText(text);
-    const padding = 4;
-    const width = metrics.width + padding * 2;
-    const height = 18;
-
-    // Background
-    ctx.fillStyle = bgColor;
-    ctx.beginPath();
-    ctx.roundRect(x - width / 2, y - height / 2, width, height, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Text
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, x, y);
-  }
-
-  drawLegend(ctx, options) {
-    if (!options || options.length === 0) return;
-
-    const legendX = 10;
-    const legendY = 10;
-    const itemHeight = 24;
-    const padding = 10;
-
-    // Background
-    const height = options.length * itemHeight + padding * 2;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-    ctx.beginPath();
-    ctx.roundRect(legendX, legendY, 180, height, 6);
-    ctx.fill();
-
-    // Items
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-
-    options.forEach((opt, i) => {
-      const y = legendY + padding + i * itemHeight + itemHeight / 2;
-      const color = QUIZ_COLORS[i % QUIZ_COLORS.length];
-
-      // Color box
-      ctx.fillStyle = color;
-      ctx.fillRect(legendX + padding, y - 8, 16, 16);
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(legendX + padding, y - 8, 16, 16);
-
-      // Text
-      ctx.fillStyle = '#ffffff';
-      const label = opt.label.length > 18 ? opt.label.substring(0, 16) + '...' : opt.label;
-      ctx.fillText(`${opt.value}: ${label}`, legendX + padding + 22, y);
-    });
-  }
-
-  // Backward compatibility
   render(entityId, mode) {
     return this.renderQuiz({ mode }, []);
   }
@@ -498,7 +448,6 @@ export class WorldMap {
   }
 }
 
-// Singleton
 let mapInstance = null;
 
 export async function getMap() {
