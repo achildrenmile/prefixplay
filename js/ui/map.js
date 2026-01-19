@@ -724,6 +724,60 @@ export class WorldMap {
       }
     }
 
+    // For neighbor mode, draw Austria border outline
+    if (isNeighborMode && this.austriaStates) {
+      ctx.strokeStyle = '#fbbf24';  // Amber/gold color for Austria
+      ctx.lineWidth = 4;
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.3)';  // Semi-transparent amber fill
+
+      for (const feature of this.austriaStates.features) {
+        const polygons = feature.geometry.type === 'MultiPolygon'
+          ? feature.geometry.coordinates
+          : [feature.geometry.coordinates];
+
+        for (const polygon of polygons) {
+          for (const ring of polygon) {
+            ctx.beginPath();
+            let first = true;
+
+            for (const coord of ring) {
+              const [lon, lat] = coord;
+              const pixel = this.latLonToPixel(lat, lon, bounds);
+
+              if (first) {
+                ctx.moveTo(pixel.x, pixel.y);
+                first = false;
+              } else {
+                ctx.lineTo(pixel.x, pixel.y);
+              }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw "OE" label in center of Austria with background
+      const austriaCenter = this.latLonToPixel(47.5, 14.5, bounds);
+
+      // Draw background circle
+      ctx.beginPath();
+      ctx.arc(austriaCenter.x, austriaCenter.y, 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw text
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillStyle = '#000000';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('OE', austriaCenter.x, austriaCenter.y);
+    }
+
     // Draw circular markers for all answer options
     if (options) {
       options.forEach((opt, i) => {
