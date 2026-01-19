@@ -4,6 +4,7 @@
  */
 
 import { t } from '../i18n/translations.js';
+import { getMap } from './map.js';
 
 /**
  * Game Card Class
@@ -21,7 +22,7 @@ export class GameCard {
   /**
    * Render a question
    */
-  render(question) {
+  async render(question) {
     this.question = question;
     this.isLocked = false;
 
@@ -31,6 +32,7 @@ export class GameCard {
           <span class="mode-icon">${question.metadata?.icon || '\u{1F4E1}'}</span>
           <span class="mode-label">${question.mode.name}</span>
         </div>
+        <div class="card-map" id="question-map"></div>
         <div class="card-prompt">
           <h2>${question.prompt}</h2>
         </div>
@@ -55,6 +57,25 @@ export class GameCard {
     this.container.innerHTML = html;
     this.element = this.container.querySelector('.game-card');
     this.attachListeners();
+
+    // Render map
+    this.renderMap(question);
+  }
+
+  /**
+   * Render the map for the question
+   */
+  async renderMap(question) {
+    const mapContainer = this.element.querySelector('#question-map');
+    if (!mapContainer) return;
+
+    try {
+      const map = await getMap();
+      map.renderTo(mapContainer, question.entityId, question.mode);
+    } catch (error) {
+      console.error('Failed to render map:', error);
+      mapContainer.style.display = 'none';
+    }
   }
 
   /**

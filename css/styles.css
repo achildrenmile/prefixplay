@@ -521,6 +521,28 @@ button {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
+/* ===== Map Display ===== */
+.card-map {
+  margin-bottom: var(--spacing-md);
+}
+
+.map-container {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.map-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.world-map-canvas {
+  image-rendering: crisp-edges;
+}
+
 /* ===== Stats Panel ===== */
 .stats-panel {
   display: flex;
