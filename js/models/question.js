@@ -7,6 +7,7 @@ import { DXCC_ENTITIES, getRandomEntity, CONTINENT_GROUPS } from '../data/dxcc.j
 import { AUSTRIA_STATES, getRandomState, initializeAustriaLookups } from '../data/austria.js';
 import { AUSTRIA_NEIGHBORS, getRandomNeighbor, initializeNeighborLookups } from '../data/neighbors.js';
 import { GAME_MODES } from './game-state.js';
+import { t } from '../i18n/translations.js';
 
 // Initialize lookups
 initializeAustriaLookups();
@@ -127,7 +128,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `Welches Bundesland verwendet "${state.prefix}"?`,
+      prompt: t('whichStateUsesPrefix', { prefix: state.prefix }),
       correctAnswer: state.name,
       options,
       entityId: state.id,
@@ -156,7 +157,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `Welcher Prefix gilt für ${state.name}?`,
+      prompt: t('whatPrefixForState', { state: state.name }),
       correctAnswer: state.prefix,
       options,
       entityId: state.id,
@@ -223,7 +224,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `Welches Nachbarland verwendet "${neighbor.primaryPrefix}"?`,
+      prompt: t('whichNeighborUsesPrefix', { prefix: neighbor.primaryPrefix }),
       correctAnswer: neighbor.name,
       options,
       entityId: neighbor.id,
@@ -253,7 +254,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `Was ist der Prefix für ${neighbor.flag} ${neighbor.name}?`,
+      prompt: t('whatPrefixForNeighbor', { country: `${neighbor.flag} ${neighbor.name}` }),
       correctAnswer: neighbor.primaryPrefix,
       options,
       entityId: neighbor.id,
@@ -296,7 +297,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `What country uses the prefix "${prefix}"?`,
+      prompt: t('whatCountryUsesPrefix', { prefix }),
       correctAnswer: entity.name,
       options,
       entityId: entity.id,
@@ -326,7 +327,7 @@ export class QuestionGenerator {
 
     return new Question({
       mode,
-      prompt: `What is the primary prefix for ${entity.flag} ${entity.name}?`,
+      prompt: t('whatIsPrefixFor', { country: `${entity.flag} ${entity.name}` }),
       correctAnswer: entity.primaryPrefix,
       options,
       entityId: entity.id,
