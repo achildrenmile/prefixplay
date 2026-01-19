@@ -67,9 +67,9 @@ export class GameCard {
   }
 
   /**
-   * Render the map for the question
+   * Render the map for the question with retry
    */
-  async renderMap(question) {
+  async renderMap(question, retryCount = 0) {
     const mapContainer = this.element.querySelector('#question-map');
     if (!mapContainer) return;
 
@@ -79,7 +79,15 @@ export class GameCard {
       map.renderQuizTo(mapContainer, question, question.options);
     } catch (error) {
       console.error('Failed to render map:', error);
-      mapContainer.style.display = 'none';
+
+      // Retry up to 2 times with delay
+      if (retryCount < 2) {
+        console.log(`Retrying map load (attempt ${retryCount + 2})...`);
+        setTimeout(() => this.renderMap(question, retryCount + 1), 1000);
+      } else {
+        // Show error message instead of hiding
+        mapContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;">Map loading failed. Please refresh.</div>';
+      }
     }
   }
 

@@ -784,11 +784,38 @@ export class WorldMap {
 }
 
 let mapInstance = null;
+let mapLoadPromise = null;
 
 export async function getMap() {
-  if (!mapInstance) {
-    mapInstance = new WorldMap();
-    await mapInstance.init();
+  // If already loaded successfully, return it
+  if (mapInstance && mapInstance.loaded) {
+    return mapInstance;
   }
-  return mapInstance;
+
+  // If currently loading, wait for it
+  if (mapLoadPromise) {
+    return mapLoadPromise;
+  }
+
+  // Start loading
+  mapLoadPromise = (async () => {
+    try {
+      mapInstance = new WorldMap();
+      await mapInstance.init();
+
+      if (!mapInstance.loaded) {
+        throw new Error('Map failed to load');
+      }
+
+      return mapInstance;
+    } catch (error) {
+      console.error('Map loading failed:', error);
+      // Reset so next call tries again
+      mapInstance = null;
+      mapLoadPromise = null;
+      throw error;
+    }
+  })();
+
+  return mapLoadPromise;
 }
