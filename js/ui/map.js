@@ -209,42 +209,143 @@ const NAME_TO_COUNTRY = {
   'iceland': 'Iceland'
 };
 
-// Small countries/territories that don't appear in 110m map (need markers)
+// Coordinates for DXCC entities not in 110m map (islands, small countries, territories)
 const SMALL_COUNTRY_COORDS = {
+  // European microstates
   'liechtenstein': { lat: 47.16, lon: 9.55 },
   'monaco': { lat: 43.73, lon: 7.42 },
   'san marino': { lat: 43.94, lon: 12.46 },
   'vatican': { lat: 41.90, lon: 12.45 },
   'andorra': { lat: 42.51, lon: 1.52 },
   'malta': { lat: 35.94, lon: 14.38 },
-  'luxembourg': { lat: 49.61, lon: 6.13 },
-  'singapore': { lat: 1.35, lon: 103.82 },
-  'bahrain': { lat: 26.07, lon: 50.55 },
-  'hong kong': { lat: 22.32, lon: 114.17 },
-  'macao': { lat: 22.20, lon: 113.55 },
-  'brunei': { lat: 4.54, lon: 114.73 },
+  'gibraltar': { lat: 36.14, lon: -5.35 },
+
+  // UK territories
+  'england': { lat: 52.35, lon: -1.17 },
+  'scotland': { lat: 56.49, lon: -4.20 },
+  'wales': { lat: 52.13, lon: -3.78 },
+  'northern ireland': { lat: 54.79, lon: -6.49 },
+  'isle of man': { lat: 54.24, lon: -4.55 },
+  'jersey': { lat: 49.21, lon: -2.13 },
+  'guernsey': { lat: 49.45, lon: -2.54 },
+
+  // Nordic/Atlantic islands
+  'aland islands': { lat: 60.18, lon: 19.91 },
+  'faroe islands': { lat: 61.89, lon: -6.91 },
+  'svalbard': { lat: 78.22, lon: 15.64 },
+  'azores': { lat: 37.74, lon: -25.67 },
+  'madeira': { lat: 32.65, lon: -16.91 },
+  'canary islands': { lat: 28.29, lon: -16.63 },
+
+  // Mediterranean islands
+  'balearic islands': { lat: 39.57, lon: 2.65 },
+  'sardinia': { lat: 40.12, lon: 9.01 },
+  'crete': { lat: 35.24, lon: 24.90 },
+  'dodecanese': { lat: 36.43, lon: 28.22 },
+  'mount athos': { lat: 40.16, lon: 24.33 },
+
+  // Caribbean
+  'anguilla': { lat: 18.22, lon: -63.07 },
+  'antigua & barbuda': { lat: 17.06, lon: -61.80 },
+  'aruba': { lat: 12.52, lon: -69.97 },
   'barbados': { lat: 13.19, lon: -59.54 },
-  'grenada': { lat: 12.12, lon: -61.68 },
+  'bonaire': { lat: 12.20, lon: -68.26 },
+  'british virgin islands': { lat: 18.42, lon: -64.62 },
+  'cayman islands': { lat: 19.31, lon: -81.25 },
+  'curacao': { lat: 12.17, lon: -68.99 },
   'dominica': { lat: 15.41, lon: -61.34 },
+  'grenada': { lat: 12.12, lon: -61.68 },
+  'guadeloupe': { lat: 16.27, lon: -61.55 },
+  'martinique': { lat: 14.64, lon: -61.02 },
+  'montserrat': { lat: 16.74, lon: -62.19 },
+  'saba & st. eustatius': { lat: 17.49, lon: -63.24 },
+  'sint maarten': { lat: 18.04, lon: -63.07 },
+  'st. kitts & nevis': { lat: 17.36, lon: -62.78 },
   'st. lucia': { lat: 13.91, lon: -60.98 },
   'st. vincent': { lat: 13.25, lon: -61.20 },
-  'st. kitts & nevis': { lat: 17.36, lon: -62.78 },
-  'antigua & barbuda': { lat: 17.06, lon: -61.80 },
-  'mauritius': { lat: -20.35, lon: 57.55 },
-  'seychelles': { lat: -4.68, lon: 55.49 },
-  'maldives': { lat: 3.20, lon: 73.22 },
-  'comoros': { lat: -11.88, lon: 43.87 },
-  'cape verde': { lat: 16.00, lon: -24.01 },
-  'sao tome & principe': { lat: 0.19, lon: 6.61 },
+  'us virgin islands': { lat: 18.34, lon: -64.93 },
+
+  // Central/South America
+  'french guiana': { lat: 3.93, lon: -53.13 },
+  'galapagos islands': { lat: -0.95, lon: -90.97 },
+  'easter island': { lat: -27.11, lon: -109.35 },
+  'falkland islands': { lat: -51.80, lon: -59.17 },
+
+  // US territories
+  'alaska': { lat: 64.20, lon: -152.49 },
+  'hawaii': { lat: 19.90, lon: -155.58 },
+  'guam': { lat: 13.44, lon: 144.79 },
+  'northern mariana islands': { lat: 15.18, lon: 145.75 },
+  'american samoa': { lat: -14.27, lon: -170.70 },
+  'guantanamo bay': { lat: 19.90, lon: -75.10 },
+  'midway island': { lat: 28.21, lon: -177.38 },
+  'wake island': { lat: 19.28, lon: 166.65 },
+  'johnston island': { lat: 16.73, lon: -169.53 },
+  'baker & howland islands': { lat: 0.19, lon: -176.48 },
+  'palmyra & jarvis islands': { lat: 5.88, lon: -162.08 },
+
+  // Pacific islands
   'samoa': { lat: -13.76, lon: -172.10 },
   'tonga': { lat: -21.18, lon: -175.20 },
+  'fiji': { lat: -17.71, lon: 178.07 },
   'vanuatu': { lat: -17.73, lon: 168.32 },
   'kiribati': { lat: 1.87, lon: -157.36 },
   'nauru': { lat: -0.52, lon: 166.93 },
   'tuvalu': { lat: -7.11, lon: 177.65 },
   'palau': { lat: 7.51, lon: 134.58 },
   'marshall islands': { lat: 7.13, lon: 171.18 },
-  'micronesia': { lat: 7.43, lon: 150.55 }
+  'micronesia': { lat: 7.43, lon: 150.55 },
+  'solomon islands': { lat: -9.43, lon: 160.02 },
+  'niue': { lat: -19.05, lon: -169.87 },
+  'cook islands': { lat: -21.24, lon: -159.78 },
+  'tokelau': { lat: -9.20, lon: -171.85 },
+  'wallis & futuna islands': { lat: -13.77, lon: -177.16 },
+  'french polynesia': { lat: -17.68, lon: -149.41 },
+  'new caledonia': { lat: -20.90, lon: 165.62 },
+
+  // Australian territories
+  'norfolk island': { lat: -29.04, lon: 167.95 },
+  'lord howe island': { lat: -31.56, lon: 159.08 },
+  'christmas island': { lat: -10.45, lon: 105.69 },
+  'cocos (keeling) islands': { lat: -12.19, lon: 96.83 },
+  'macquarie island': { lat: -54.62, lon: 158.86 },
+  'heard island': { lat: -53.10, lon: 73.52 },
+
+  // Asian territories
+  'hong kong': { lat: 22.32, lon: 114.17 },
+  'macao': { lat: 22.20, lon: 113.55 },
+  'singapore': { lat: 1.35, lon: 103.82 },
+  'east timor': { lat: -8.87, lon: 125.73 },
+
+  // Indian Ocean
+  'bahrain': { lat: 26.07, lon: 50.55 },
+  'maldives': { lat: 3.20, lon: 73.22 },
+  'mauritius': { lat: -20.35, lon: 57.55 },
+  'rodrigues island': { lat: -19.72, lon: 63.43 },
+  'reunion': { lat: -21.12, lon: 55.54 },
+  'seychelles': { lat: -4.68, lon: 55.49 },
+  'comoros': { lat: -11.88, lon: 43.87 },
+  'mayotte': { lat: -12.84, lon: 45.14 },
+  'chagos islands': { lat: -6.34, lon: 71.88 },
+  'andaman & nicobar islands': { lat: 11.74, lon: 92.66 },
+  'lakshadweep islands': { lat: 10.57, lon: 72.64 },
+
+  // African islands
+  'cape verde': { lat: 16.00, lon: -24.01 },
+  'sao tome & principe': { lat: 0.19, lon: 6.61 },
+  'ascension island': { lat: -7.94, lon: -14.36 },
+  'st. helena': { lat: -15.97, lon: -5.70 },
+  'tristan da cunha': { lat: -37.07, lon: -12.32 },
+
+  // Antarctic/Sub-Antarctic
+  'bouvet island': { lat: -54.43, lon: 3.38 },
+  'south georgia island': { lat: -54.28, lon: -36.51 },
+  'south orkney islands': { lat: -60.58, lon: -45.50 },
+  'south shetland islands': { lat: -62.00, lon: -58.00 },
+  'peter i island': { lat: -68.77, lon: -90.58 },
+  'kerguelen islands': { lat: -49.28, lon: 69.35 },
+  'crozet islands': { lat: -46.43, lon: 51.75 },
+  'amsterdam & st. paul islands': { lat: -37.83, lon: 77.52 }
 };
 
 // Austrian Bundesländer data
