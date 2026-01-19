@@ -524,6 +524,9 @@ button {
 /* ===== Map Display ===== */
 .card-map {
   margin-bottom: var(--spacing-md);
+  min-height: 150px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
 }
 
 .map-container {
