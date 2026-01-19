@@ -40,13 +40,15 @@ export class GameCard {
           <h2>${question.prompt}</h2>
         </div>
         <div class="card-options">
-          ${question.options.map((opt, i) => `
+          ${question.options.map((opt, i) => {
+            const showColorIndicator = question.mode?.category !== 'austria';
+            return `
             <button class="option-btn" data-index="${i}" data-value="${this.escapeHtml(opt.value)}">
-              <span class="color-indicator" style="background-color: ${QUIZ_COLORS[i % QUIZ_COLORS.length]}"></span>
+              ${showColorIndicator ? `<span class="color-indicator" style="background-color: ${QUIZ_COLORS[i % QUIZ_COLORS.length]}"></span>` : ''}
               ${opt.flag ? `<span class="flag">${opt.flag}</span>` : ''}
               <span class="option-text">${this.escapeHtml(opt.label)}</span>
             </button>
-          `).join('')}
+          `}).join('')}
         </div>
         <div class="card-feedback hidden">
           <div class="feedback-content">
