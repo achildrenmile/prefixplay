@@ -42,6 +42,9 @@ class PrefixPlayApp {
     // Setup language change listener
     this.setupLanguageListener();
 
+    // Update page title based on current language
+    this.updatePageTitle();
+
     // Show privacy notice on first visit
     this.checkFirstVisit();
 
