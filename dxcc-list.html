@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DXCC Prefix Liste - Alle Amateurfunk-Rufzeichenprefixe und Länder">
+  <meta name="theme-color" content="#0f172a">
+  <title>DXCC Prefix Liste - PrefixPlay</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid #334155;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #f8fafc;
+    }
+
+    .header h1 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .header h1 a:hover {
+      color: #60a5fa;
+    }
+
+    .back-link {
+      color: #60a5fa;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      color: #93c5fd;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .intro {
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #334155;
+    }
+
+    .intro h2 {
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro p {
+      color: #94a3b8;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: rgba(51, 65, 85, 0.5);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .search-box {
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #60a5fa;
+    }
+
+    .search-input::placeholder {
+      color: #64748b;
+    }
+
+    .continent-section {
+      margin-bottom: 2rem;
+    }
+
+    .continent-header {
+      background: rgba(51, 65, 85, 0.8);
+      padding: 1rem 1.5rem;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid #334155;
+      border-bottom: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .continent-header h3 {
+      color: #f8fafc;
+      font-size: 1.1rem;
+    }
+
+    .continent-count {
+      background: #334155;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .dxcc-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid #334155;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+
+    .dxcc-table th {
+      background: rgba(51, 65, 85, 0.5);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dxcc-table td {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #334155;
+    }
+
+    .dxcc-table tr:hover td {
+      background: rgba(51, 65, 85, 0.3);
+    }
+
+    .dxcc-table tr.hidden {
+      display: none;
+    }
+
+    .prefix-cell {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: bold;
+      color: #60a5fa;
+      font-size: 1rem;
+    }
+
+    .country-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .flag {
+      font-size: 1.5rem;
+    }
+
+    .country-name {
+      color: #e2e8f0;
+    }
+
+    .all-prefixes {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .cq-itu {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .dxcc-table th:nth-child(3),
+      .dxcc-table td:nth-child(3),
+      .dxcc-table th:nth-child(4),
+      .dxcc-table td:nth-child(4) {
+        display: none;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1><a href="index.html">📡 PrefixPlay</a></h1>
+      <a href="index.html" class="back-link">← Zurück zum Quiz</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="intro">
+      <h2>DXCC Prefix Liste</h2>
+      <p>Vollständige Liste aller DXCC-Entitäten mit Amateurfunk-Rufzeichenprefixen als Lernhilfe.</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="total-count">-</div>
+          <div class="stat-label">DXCC Entitäten</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="continent-count">-</div>
+          <div class="stat-label">Kontinente</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" class="search-input" id="search" placeholder="Suchen nach Prefix oder Land...">
+    </div>
+
+    <div id="dxcc-content">
+      <p style="color: #94a3b8;">Lade DXCC Daten...</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>DXCC (DX Century Club) ist ein Diplom-Programm der <a href="https://www.arrl.org/" target="_blank" rel="noopener">ARRL</a>.</p>
+    <p style="margin-top: 0.5rem;"><a href="index.html">← Zurück zu PrefixPlay</a></p>
+  </footer>
+
+  <script type="module">
+    import { DXCC_ENTITIES } from './js/data/dxcc.js';
+
+    const CONTINENT_NAMES = {
+      'EU': 'Europa',
+      'NA': 'Nordamerika',
+      'SA': 'Südamerika',
+      'AF': 'Afrika',
+      'AS': 'Asien',
+      'OC': 'Ozeanien',
+      'AN': 'Antarktis'
+    };
+
+    const CONTINENT_ORDER = ['EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'AN'];
+
+    function renderDXCCList() {
+      // Group by continent
+      const byContinent = new Map();
+
+      for (const entity of DXCC_ENTITIES) {
+        const cont = entity.continent;
+        if (!byContinent.has(cont)) {
+          byContinent.set(cont, []);
+        }
+        byContinent.get(cont).push(entity);
+      }
+
+      // Sort each continent by primary prefix
+      for (const [cont, entities] of byContinent) {
+        entities.sort((a, b) => a.primaryPrefix.localeCompare(b.primaryPrefix));
+      }
+
+      // Update stats
+      document.getElementById('total-count').textContent = DXCC_ENTITIES.length;
+      document.getElementById('continent-count').textContent = byContinent.size;
+
+      // Build HTML
+      let html = '';
+
+      for (const cont of CONTINENT_ORDER) {
+        if (!byContinent.has(cont)) continue;
+        const entities = byContinent.get(cont);
+        const contName = CONTINENT_NAMES[cont] || cont;
+
+        html += `
+          <div class="continent-section" data-continent="${cont}">
+            <div class="continent-header">
+              <h3>${contName}</h3>
+              <span class="continent-count">${entities.length} Entitäten</span>
+            </div>
+            <table class="dxcc-table">
+              <thead>
+                <tr>
+                  <th>Prefix</th>
+                  <th>Land / Entität</th>
+                  <th>Alle Prefixe</th>
+                  <th>CQ / ITU Zone</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        for (const entity of entities) {
+          html += `
+            <tr data-search="${entity.primaryPrefix.toLowerCase()} ${entity.name.toLowerCase()} ${entity.prefixes.join(' ').toLowerCase()}">
+              <td class="prefix-cell">${entity.primaryPrefix}</td>
+              <td class="country-cell">
+                <span class="flag">${entity.flag}</span>
+                <span class="country-name">${entity.name}</span>
+              </td>
+              <td class="all-prefixes">${entity.prefixes.join(', ')}</td>
+              <td class="cq-itu">CQ ${entity.cqZone} / ITU ${entity.ituZone}</td>
+            </tr>
+          `;
+        }
+
+        html += `
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      document.getElementById('dxcc-content').innerHTML = html;
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('search');
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.dxcc-table tbody tr');
+
+        rows.forEach(row => {
+          const searchData = row.dataset.search;
+          if (query === '' || searchData.includes(query)) {
+            row.classList.remove('hidden');
+          } else {
+            row.classList.add('hidden');
+          }
+        });
+
+        // Update continent counts
+        document.querySelectorAll('.continent-section').forEach(section => {
+          const visibleRows = section.querySelectorAll('tbody tr:not(.hidden)').length;
+          const countSpan = section.querySelector('.continent-count');
+          countSpan.textContent = `${visibleRows} Entitäten`;
+        });
+      });
+    }
+
+    // Initialize
+    renderDXCCList();
+    setupSearch();
+  </script>
+</body>
+</html>
