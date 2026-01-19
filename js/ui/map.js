@@ -204,11 +204,14 @@ export class WorldMap {
   getCoordinates(entityId) {
     if (!entityId) return null;
 
+    // Convert to string if needed
+    const id = String(entityId);
+
     // Direct lookup
-    if (COUNTRY_COORDS[entityId]) return COUNTRY_COORDS[entityId];
+    if (COUNTRY_COORDS[id]) return COUNTRY_COORDS[id];
 
     // Try lowercase
-    const lower = entityId.toLowerCase();
+    const lower = id.toLowerCase();
     if (COUNTRY_COORDS[lower]) return COUNTRY_COORDS[lower];
 
     return null;
