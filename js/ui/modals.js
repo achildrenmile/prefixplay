@@ -28,18 +28,28 @@ export function showPrivacyNotice(onClose = () => {}) {
     <div class="modal-overlay" id="privacy-modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>\u{1F512} ${t('privacyTitle')}</h2>
+          <h2>\u{1F512} Datenschutzerklärung</h2>
         </div>
         <div class="modal-body">
-          <p><strong>${t('privacyText1')}</strong></p>
+          <p>Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie über die Datenverarbeitung auf dieser Website.</p>
+
+          <p><strong>Keine Datenerhebung</strong></p>
+          <p>Diese Website ist ein reines Client-Side-Tool und erhebt, speichert oder verarbeitet keine personenbezogenen Daten. Es gibt:</p>
           <ul class="privacy-list">
-            <li>\u2713 ${t('privacyText2')}</li>
-            <li>\u2713 ${t('privacyText3')}</li>
-            <li>\u2713 ${t('privacyText4')}</li>
-            <li>\u2713 ${t('privacyText5')}</li>
-            <li>\u2713 ${t('privacyText6')}</li>
-            <li>\u26A0 ${t('privacyText7')}</li>
+            <li>\u2713 Keine Formulare oder Benutzereingaben</li>
+            <li>\u2713 Keine Cookies</li>
+            <li>\u2713 Kein Tracking oder Analytics</li>
+            <li>\u2713 Keine serverseitige Datenverarbeitung</li>
           </ul>
+
+          <p><strong>Lokale Speicherung</strong></p>
+          <p>Ihre Spielstände und Einstellungen werden lokal in Ihrem Browser (localStorage) gespeichert. Diese Daten werden nicht an Server übertragen und können jederzeit durch Löschen der Browser-Daten entfernt werden.</p>
+
+          <p><strong>Cloudflare</strong></p>
+          <p>Diese Website wird über Cloudflare bereitgestellt. Cloudflare kann technisch notwendige Verbindungsdaten verarbeiten. Weitere Informationen finden Sie in der <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Datenschutzerklärung von Cloudflare</a>.</p>
+
+          <p><strong>Ihre Rechte</strong></p>
+          <p>Da wir keine personenbezogenen Daten erheben, entfallen die üblichen DSGVO-Rechte wie Auskunft, Berichtigung oder Löschung. Bei Fragen können Sie uns dennoch kontaktieren: <a href="mailto:oe8yml@rednil.at">oe8yml@rednil.at</a></p>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" id="privacy-accept">${t('understand')}</button>
@@ -93,21 +103,37 @@ export function showImprint(onClose = () => {}) {
     <div class="modal-overlay" id="imprint-modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>${t('imprintTitle')}</h2>
+          <h2>Impressum</h2>
         </div>
         <div class="modal-body">
-          <p><strong>${t('imprintResponsible')}</strong></p>
+          <p class="legal-info">Angaben gemäß § 5 ECG und § 25 MedienG</p>
+
+          <p><strong>Betreiber</strong></p>
           <p>
-            Kurt Baumann<br>
+            Michael Linder<br>
             OE8YML<br>
-            9521 Treffen<br>
-            Austria
+            Nötsch 219<br>
+            9611 Nötsch<br>
+            Österreich
           </p>
-          <p><strong>${t('imprintContact')}</strong></p>
+
+          <p><strong>Kontakt</strong></p>
           <p>
             E-Mail: <a href="mailto:oe8yml@rednil.at">oe8yml@rednil.at</a>
           </p>
-          <p class="imprint-note">${t('imprintNote')}</p>
+
+          <p><strong>Haftung für Inhalte</strong></p>
+          <p class="imprint-note">
+            Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt.
+            Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.
+            Diese Website dient ausschließlich Bildungszwecken zum Erlernen von Amateurfunk-Rufzeichenpräfixen.
+          </p>
+
+          <p><strong>Urheberrecht</strong></p>
+          <p class="imprint-note">
+            Die durch den Betreiber erstellten Inhalte und Werke auf dieser Website unterliegen dem österreichischen Urheberrecht.
+            Der Quellcode ist unter der MIT-Lizenz auf GitHub verfügbar.
+          </p>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" id="imprint-close">${t('close')}</button>
