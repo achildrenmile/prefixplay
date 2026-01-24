@@ -580,8 +580,19 @@ export class WorldMap {
     ctx.fillStyle = '#1e3a5f';
     ctx.fillRect(0, 0, this.width, this.height);
 
+    // Debug: log the color assignments
+    console.log('Austria quiz color map:', Object.fromEntries(colorMap));
+    console.log('Austria quiz prefix map:', Object.fromEntries(prefixColorMap));
+
+    // Sort features so Wien is drawn LAST (on top, since it's inside Niederösterreich)
+    const sortedFeatures = [...this.austriaStates.features].sort((a, b) => {
+      if (a.properties.name.toLowerCase() === 'wien') return 1;  // Wien last
+      if (b.properties.name.toLowerCase() === 'wien') return -1;
+      return 0;
+    });
+
     // Draw each Austrian state
-    for (const feature of this.austriaStates.features) {
+    for (const feature of sortedFeatures) {
       const stateName = feature.properties.name.toLowerCase();
       const highlighted = colorMap.get(stateName);
 
