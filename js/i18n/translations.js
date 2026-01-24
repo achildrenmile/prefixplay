@@ -182,7 +182,9 @@ export const TRANSLATIONS = {
     stopPractice: '\u00DCbungsmodus beenden',
     practiceComplete: '\u{1F389} \u00DCbung abgeschlossen! Alle Fehler wurden gelernt.',
     practiceProgress: 'Noch {count} zu lernen',
-    practiceModeActive: '\u00DCbungsmodus'
+    practiceModeActive: '\u00DCbungsmodus',
+    practiceTip: 'Fehler wiederholen',
+    prefixOverview: 'Präfix-Übersicht'
   },
 
   en: {
@@ -358,7 +360,9 @@ export const TRANSLATIONS = {
     stopPractice: 'Stop practice mode',
     practiceComplete: '\u{1F389} Practice complete! All mistakes have been learned.',
     practiceProgress: '{count} left to learn',
-    practiceModeActive: 'Practice Mode'
+    practiceModeActive: 'Practice Mode',
+    practiceTip: 'Review your mistakes',
+    prefixOverview: 'Prefix Overview'
   }
 };
 

@@ -10,7 +10,7 @@
 
   <title>PrefixPlay - Lerne Amateurfunk-Rufzeichenprefixe</title>
 
-  <link rel="stylesheet" href="css/styles.css?v=20">
+  <link rel="stylesheet" href="css/styles.css?v=21">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Preconnect for performance -->
@@ -59,11 +59,11 @@
       <!-- Parent site branding renders here via JavaScript -->
     </div>
     <div class="footer-links">
-      <a href="#" id="imprint-link">Impressum</a>
+      <a href="#" id="imprint-link"></a>
       <span class="footer-separator">|</span>
-      <a href="#" id="privacy-link">Datenschutz</a>
+      <a href="#" id="privacy-link"></a>
       <span class="footer-separator">|</span>
-      <a href="dxcc-list.html">Präfix-Übersicht</a>
+      <a href="dxcc-list.html" id="prefix-overview-link"></a>
       <span class="footer-separator">|</span>
       <a href="https://github.com/achildrenmile/prefixplay" target="_blank" rel="noopener">GitHub</a>
       <span class="footer-separator">|</span>
@@ -80,11 +80,29 @@
   <div id="achievements-container"></div>
 
   <!-- Load Application -->
-  <script type="module" src="js/app.js?v=20"></script>
+  <script type="module" src="js/app.js?v=21"></script>
 
   <!-- Footer link handlers -->
   <script type="module">
-    import { showPrivacyNotice, showImprint } from './js/ui/modals.js?v=20';
+    import { showPrivacyNotice, showImprint } from './js/ui/modals.js?v=21';
+    import { t } from './js/i18n/translations.js?v=21';
+
+    // Set translated footer link texts
+    function updateFooterLinks() {
+      const imprintLink = document.getElementById('imprint-link');
+      const privacyLink = document.getElementById('privacy-link');
+      const prefixLink = document.getElementById('prefix-overview-link');
+
+      if (imprintLink) imprintLink.textContent = t('imprintTitle');
+      if (privacyLink) privacyLink.textContent = t('privacy');
+      if (prefixLink) prefixLink.textContent = t('prefixOverview');
+    }
+
+    // Initial update
+    updateFooterLinks();
+
+    // Update on language change
+    window.addEventListener('languagechange', updateFooterLinks);
 
     document.getElementById('privacy-link')?.addEventListener('click', (e) => {
       e.preventDefault();

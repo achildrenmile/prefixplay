@@ -35,13 +35,13 @@ export class StatsPanel {
 
           <div class="practice-tip">
             <span>\u{1F4A1}</span>
-            <span>${t('practiceModeShort')}: ${t('noRetryItems').toLowerCase() === 'keine fehler zum üben' ? 'Fehler wiederholen' : 'Review mistakes'}</span>
+            <span>${t('practiceModeShort')}: ${t('practiceTip')}</span>
           </div>
 
           <div class="help-link">
             <a href="dxcc-list.html" class="help-link-btn">
               <span class="help-icon">\u{2753}</span>
-              <span>Präfix-Übersicht</span>
+              <span>${t('prefixOverview')}</span>
             </a>
           </div>
         </div>
@@ -102,7 +102,7 @@ export class StatsPanel {
         <div class="help-link">
           <a href="dxcc-list.html" class="help-link-btn">
             <span class="help-icon">\u{2753}</span>
-            <span>Präfix-Übersicht</span>
+            <span>${t('prefixOverview')}</span>
           </a>
         </div>
       </div>
