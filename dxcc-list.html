@@ -116,8 +116,17 @@
       color: #94a3b8;
     }
 
+    .controls-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
     .search-box {
-      margin-bottom: 2rem;
+      flex: 1;
+      min-width: 200px;
     }
 
     .search-input {
@@ -138,6 +147,46 @@
 
     .search-input::placeholder {
       color: #64748b;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sort-label {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-right: 0.25rem;
+    }
+
+    .sort-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sort-btn:hover {
+      background: rgba(51, 65, 85, 0.8);
+      color: #e2e8f0;
+    }
+
+    .sort-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #fff;
+    }
+
+    .view-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
 
     .continent-section {
@@ -292,8 +341,20 @@
       </div>
     </div>
 
-    <div class="search-box">
-      <input type="text" class="search-input" id="search" placeholder="Suchen nach Präfix oder Land...">
+    <div class="controls-row">
+      <div class="search-box">
+        <input type="text" class="search-input" id="search" placeholder="Suchen nach Präfix oder Land...">
+      </div>
+      <div class="sort-controls">
+        <span class="sort-label">Sortieren:</span>
+        <button class="sort-btn active" id="sort-prefix">Präfix</button>
+        <button class="sort-btn" id="sort-country">Land</button>
+      </div>
+      <div class="view-controls">
+        <span class="sort-label">Ansicht:</span>
+        <button class="sort-btn active" id="view-grouped">Kontinente</button>
+        <button class="sort-btn" id="view-flat">A-Z Liste</button>
+      </div>
     </div>
 
     <div id="dxcc-content">
@@ -321,8 +382,34 @@
 
     const CONTINENT_ORDER = ['EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'AN'];
 
-    function renderDXCCList() {
-      // Group by continent
+    // Current state
+    let sortBy = 'prefix'; // 'prefix' or 'country'
+    let viewMode = 'grouped'; // 'grouped' or 'flat'
+
+    function sortEntities(entities, by) {
+      return [...entities].sort((a, b) => {
+        if (by === 'country') {
+          return a.name.localeCompare(b.name, 'de', { sensitivity: 'base' });
+        }
+        return a.primaryPrefix.localeCompare(b.primaryPrefix);
+      });
+    }
+
+    function renderEntityRow(entity) {
+      return `
+        <tr data-search="${entity.primaryPrefix.toLowerCase()} ${entity.name.toLowerCase()} ${entity.prefixes.join(' ').toLowerCase()}">
+          <td class="prefix-cell">${entity.primaryPrefix}</td>
+          <td class="country-cell">
+            <span class="flag">${entity.flag}</span>
+            <span class="country-name">${entity.name}</span>
+          </td>
+          <td class="all-prefixes">${entity.prefixes.join(', ')}</td>
+          <td class="cq-itu">CQ ${entity.cqZone} / ITU ${entity.ituZone}</td>
+        </tr>
+      `;
+    }
+
+    function renderGroupedView() {
       const byContinent = new Map();
 
       for (const entity of DXCC_ENTITIES) {
@@ -333,16 +420,11 @@
         byContinent.get(cont).push(entity);
       }
 
-      // Sort each continent by primary prefix
+      // Sort each continent
       for (const [cont, entities] of byContinent) {
-        entities.sort((a, b) => a.primaryPrefix.localeCompare(b.primaryPrefix));
+        byContinent.set(cont, sortEntities(entities, sortBy));
       }
 
-      // Update stats
-      document.getElementById('total-count').textContent = DXCC_ENTITIES.length;
-      document.getElementById('continent-count').textContent = byContinent.size;
-
-      // Build HTML
       let html = '';
 
       for (const cont of CONTINENT_ORDER) {
@@ -366,60 +448,122 @@
                 </tr>
               </thead>
               <tbody>
-        `;
-
-        for (const entity of entities) {
-          html += `
-            <tr data-search="${entity.primaryPrefix.toLowerCase()} ${entity.name.toLowerCase()} ${entity.prefixes.join(' ').toLowerCase()}">
-              <td class="prefix-cell">${entity.primaryPrefix}</td>
-              <td class="country-cell">
-                <span class="flag">${entity.flag}</span>
-                <span class="country-name">${entity.name}</span>
-              </td>
-              <td class="all-prefixes">${entity.prefixes.join(', ')}</td>
-              <td class="cq-itu">CQ ${entity.cqZone} / ITU ${entity.ituZone}</td>
-            </tr>
-          `;
-        }
-
-        html += `
+                ${entities.map(renderEntityRow).join('')}
               </tbody>
             </table>
           </div>
         `;
       }
 
-      document.getElementById('dxcc-content').innerHTML = html;
+      return html;
     }
 
-    function setupSearch() {
+    function renderFlatView() {
+      const sorted = sortEntities(DXCC_ENTITIES, sortBy);
+
+      return `
+        <div class="continent-section">
+          <div class="continent-header">
+            <h3>Alle DXCC Entitäten (A-Z)</h3>
+            <span class="continent-count">${sorted.length} Entitäten</span>
+          </div>
+          <table class="dxcc-table">
+            <thead>
+              <tr>
+                <th>Präfix</th>
+                <th>Land / Entität</th>
+                <th>Alle Präfixe</th>
+                <th>CQ / ITU Zone</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sorted.map(renderEntityRow).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderDXCCList() {
+      // Update stats
+      document.getElementById('total-count').textContent = DXCC_ENTITIES.length;
+      document.getElementById('continent-count').textContent =
+        new Set(DXCC_ENTITIES.map(e => e.continent)).size;
+
+      // Render based on view mode
+      const html = viewMode === 'grouped' ? renderGroupedView() : renderFlatView();
+      document.getElementById('dxcc-content').innerHTML = html;
+
+      // Re-apply search filter if there's a query
       const searchInput = document.getElementById('search');
+      if (searchInput.value.trim()) {
+        applySearchFilter(searchInput.value);
+      }
+    }
 
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        const rows = document.querySelectorAll('.dxcc-table tbody tr');
+    function applySearchFilter(query) {
+      query = query.toLowerCase().trim();
+      const rows = document.querySelectorAll('.dxcc-table tbody tr');
 
-        rows.forEach(row => {
-          const searchData = row.dataset.search;
-          if (query === '' || searchData.includes(query)) {
-            row.classList.remove('hidden');
-          } else {
-            row.classList.add('hidden');
-          }
-        });
+      rows.forEach(row => {
+        const searchData = row.dataset.search;
+        if (query === '' || searchData.includes(query)) {
+          row.classList.remove('hidden');
+        } else {
+          row.classList.add('hidden');
+        }
+      });
 
-        // Update continent counts
-        document.querySelectorAll('.continent-section').forEach(section => {
-          const visibleRows = section.querySelectorAll('tbody tr:not(.hidden)').length;
-          const countSpan = section.querySelector('.continent-count');
+      // Update continent counts
+      document.querySelectorAll('.continent-section').forEach(section => {
+        const visibleRows = section.querySelectorAll('tbody tr:not(.hidden)').length;
+        const countSpan = section.querySelector('.continent-count');
+        if (countSpan) {
           countSpan.textContent = `${visibleRows} Entitäten`;
-        });
+        }
+      });
+    }
+
+    function setupControls() {
+      // Search
+      document.getElementById('search').addEventListener('input', (e) => {
+        applySearchFilter(e.target.value);
+      });
+
+      // Sort buttons
+      document.getElementById('sort-prefix').addEventListener('click', () => {
+        sortBy = 'prefix';
+        document.getElementById('sort-prefix').classList.add('active');
+        document.getElementById('sort-country').classList.remove('active');
+        renderDXCCList();
+      });
+
+      document.getElementById('sort-country').addEventListener('click', () => {
+        sortBy = 'country';
+        document.getElementById('sort-country').classList.add('active');
+        document.getElementById('sort-prefix').classList.remove('active');
+        renderDXCCList();
+      });
+
+      // View buttons
+      document.getElementById('view-grouped').addEventListener('click', () => {
+        viewMode = 'grouped';
+        document.getElementById('view-grouped').classList.add('active');
+        document.getElementById('view-flat').classList.remove('active');
+        renderDXCCList();
+      });
+
+      document.getElementById('view-flat').addEventListener('click', () => {
+        viewMode = 'flat';
+        document.getElementById('view-flat').classList.add('active');
+        document.getElementById('view-grouped').classList.remove('active');
+        renderDXCCList();
       });
     }
 
     // Initialize
     renderDXCCList();
-    setupSearch();
+    setupControls();
   </script>
 </body>
 </html>
