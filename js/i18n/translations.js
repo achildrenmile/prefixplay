@@ -81,7 +81,7 @@ export const TRANSLATIONS = {
     'first-steps-desc': 'Beantworte deine erste Frage richtig',
     'getting-started': 'Der Anfang',
     'getting-started-desc': 'Beantworte 10 Fragen richtig',
-    'warming-up': 'Einw\u00E4rmphase',
+    'warming-up': 'Aufwärmphase',
     'warming-up-desc': 'Beantworte 25 Fragen richtig',
     'half-century': 'Halbes Jahrhundert',
     'half-century-desc': 'Beantworte 50 Fragen richtig',
