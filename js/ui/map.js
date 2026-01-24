@@ -580,10 +580,6 @@ export class WorldMap {
     ctx.fillStyle = '#1e3a5f';
     ctx.fillRect(0, 0, this.width, this.height);
 
-    // Debug: log the color assignments
-    console.log('Austria quiz color map:', Object.fromEntries(colorMap));
-    console.log('Austria quiz prefix map:', Object.fromEntries(prefixColorMap));
-
     // Sort features so Wien is drawn LAST (on top, since it's inside Niederösterreich)
     const sortedFeatures = [...this.austriaStates.features].sort((a, b) => {
       if (a.properties.name.toLowerCase() === 'wien') return 1;  // Wien last
@@ -634,25 +630,7 @@ export class WorldMap {
       }
     }
 
-    // Draw markers using predefined AUSTRIA_STATES coordinates (ensures consistent visibility)
-    // This is especially important for small states like Vienna
-    for (const [prefix, color] of prefixColorMap) {
-      const stateInfo = AUSTRIA_STATES[prefix];
-      if (!stateInfo) continue;
-
-      const pixel = this.latLonToPixel(stateInfo.lat, stateInfo.lon, bounds);
-
-      // Use larger marker for Vienna (OE1) since its polygon is tiny
-      const radius = prefix === 'OE1' ? 14 : 10;
-
-      ctx.beginPath();
-      ctx.arc(pixel.x, pixel.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
+    // No markers needed - the colored polygons are sufficient for identification
 
     return this.canvas;
   }
