@@ -15,6 +15,7 @@ import { StatsPanel } from './ui/stats-panel.js';
 import { AchievementsPanel } from './ui/achievements-panel.js';
 import { showPrivacyNotice, showResetConfirmation, showToast, showAchievementToast } from './ui/modals.js';
 import { initI18n, t, getLanguage } from './i18n/translations.js';
+import { loadConfig } from './config.js';
 
 /**
  * Main Application Class
@@ -26,6 +27,9 @@ class PrefixPlayApp {
 
     // Initialize data lookups
     initializeLookups();
+
+    // Load config and render parent site branding
+    this.loadAndRenderBranding();
 
     // Initialize systems
     this.scoring = new ScoringSystem();
@@ -128,6 +132,37 @@ class PrefixPlayApp {
 
     // Update document title
     document.title = `${t('appTitle')} - ${t('appSubtitle')}`;
+  }
+
+  /**
+   * Load config and render parent site branding
+   */
+  async loadAndRenderBranding() {
+    try {
+      const config = await loadConfig();
+
+      // Render header logo
+      const logoContainer = document.getElementById('parent-site-logo');
+      if (logoContainer && config.parentSiteLogo && config.parentSiteUrl) {
+        logoContainer.innerHTML = `
+          <a href="${config.parentSiteUrl}" target="_blank" rel="noopener" class="parent-logo-link">
+            <img src="${config.parentSiteLogo}" alt="${config.parentSiteName || 'Parent Site'}" class="parent-logo">
+          </a>
+        `;
+      }
+
+      // Render footer branding
+      const footerContainer = document.getElementById('parent-site-footer');
+      if (footerContainer && config.parentSiteName && config.parentSiteUrl) {
+        footerContainer.innerHTML = `
+          <div class="parent-site-branding">
+            Part of <a href="${config.parentSiteUrl}" target="_blank" rel="noopener">${config.parentSiteName}</a> Tools
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.warn('Failed to load branding config:', error);
+    }
   }
 
   /**

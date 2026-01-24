@@ -4,9 +4,13 @@
 FROM nginx:alpine
 
 # Copy static files
-COPY index.html dxcc-list.html favicon.svg countries.json austria-states.json /usr/share/nginx/html/
+COPY index.html dxcc-list.html favicon.svg countries.json austria-states.json config.json /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/css/
 COPY js/ /usr/share/nginx/html/js/
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Nginx configuration - no caching for development
 RUN echo 'server { \
@@ -33,4 +37,5 @@ RUN echo 'server { \
 
 EXPOSE 80
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

@@ -118,6 +118,40 @@ button {
 .header-content {
   max-width: 1400px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.header-left,
+.header-right {
+  flex: 0 0 200px;
+}
+
+.header-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.parent-logo-link {
+  display: block;
+}
+
+.parent-logo {
+  height: 150px;
+  width: auto;
+  object-fit: contain;
 }
 
 .header-title {
@@ -712,6 +746,21 @@ button {
   color: var(--text-muted);
 }
 
+.parent-site-branding {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.parent-site-branding a {
+  color: var(--accent-blue-light);
+  text-decoration: none;
+}
+
+.parent-site-branding a:hover {
+  text-decoration: underline;
+}
+
 .imprint-note {
   font-size: 0.9rem;
   color: var(--text-muted);
@@ -1123,6 +1172,25 @@ button {
   :root {
     --spacing-lg: 1rem;
     --spacing-xl: 1.5rem;
+  }
+
+  .header-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .header-left,
+  .header-right {
+    flex: 0 0 auto;
+  }
+
+  .header-center {
+    flex: 0 0 100%;
+    order: 2;
+  }
+
+  .parent-logo {
+    height: 80px;
   }
 
   .header-title {

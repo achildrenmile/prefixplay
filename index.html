@@ -10,7 +10,7 @@
 
   <title>PrefixPlay - Lerne Amateurfunk-Rufzeichenprefixe</title>
 
-  <link rel="stylesheet" href="css/styles.css?v=14">
+  <link rel="stylesheet" href="css/styles.css?v=15">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Preconnect for performance -->
@@ -20,8 +20,14 @@
   <!-- Header -->
   <header class="header">
     <div class="header-content">
-      <h1 class="header-title">PrefixPlay</h1>
-      <p class="header-subtitle">Lerne Amateurfunk-Rufzeichenprefixe</p>
+      <div class="header-left" id="parent-site-logo">
+        <!-- Parent site logo renders here via JavaScript -->
+      </div>
+      <div class="header-center">
+        <h1 class="header-title">PrefixPlay</h1>
+        <p class="header-subtitle">Lerne Amateurfunk-Rufzeichenprefixe</p>
+      </div>
+      <div class="header-right"></div>
     </div>
   </header>
 
@@ -49,6 +55,9 @@
 
   <!-- Footer -->
   <footer class="footer">
+    <div id="parent-site-footer">
+      <!-- Parent site branding renders here via JavaScript -->
+    </div>
     <div class="footer-links">
       <a href="#" id="imprint-link">Impressum</a>
       <span class="footer-separator">|</span>
@@ -71,11 +80,11 @@
   <div id="achievements-container"></div>
 
   <!-- Load Application -->
-  <script type="module" src="js/app.js?v=14"></script>
+  <script type="module" src="js/app.js?v=15"></script>
 
   <!-- Footer link handlers -->
   <script type="module">
-    import { showPrivacyNotice, showImprint } from './js/ui/modals.js?v=14';
+    import { showPrivacyNotice, showImprint } from './js/ui/modals.js?v=15';
 
     document.getElementById('privacy-link')?.addEventListener('click', (e) => {
       e.preventDefault();
