@@ -407,6 +407,24 @@ button {
   color: var(--text-secondary);
 }
 
+.practice-badge {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.game-card.practice-active {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
 .card-prompt {
   margin-bottom: var(--spacing-xl);
 }
@@ -683,6 +701,58 @@ button {
 
 .help-icon {
   font-size: 1.1rem;
+}
+
+/* Practice Mode Stats */
+.stats-panel.practice-mode {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px solid var(--accent-blue);
+}
+
+.stats-panel.practice-mode .stats-title {
+  color: var(--accent-blue-light);
+}
+
+.practice-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-lg) 0;
+}
+
+.practice-progress-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.practice-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.practice-progress-label {
+  margin-top: var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.practice-tip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(251, 191, 36, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: var(--spacing-md);
 }
 
 .streak-indicator {

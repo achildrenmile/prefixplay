@@ -225,16 +225,27 @@ class PrefixPlayApp {
         if (removed) {
           this.achievements.incrementRetryClear();
         }
+
+        // Check if practice mode is complete (no more items to practice)
+        const remainingItems = this.retryPool.getCount(this.state.currentMode.id);
+        if (remainingItems === 0) {
+          // Practice complete - exit practice mode and show completion message
+          this.state.setPracticeMode(false);
+          this.menu.updatePracticeMode(false, 0);
+          showToast(t('practiceComplete'), 'success');
+        }
       }
     } else {
       // Add wrong answer to retry pool
       this.retryPool.add(this.state.currentMode.id, question.entityId);
     }
 
-    // Check for new achievements
-    const newAchievements = this.achievements.checkAndUnlock(stats);
-    if (newAchievements.length > 0) {
-      this.showNewAchievements(newAchievements);
+    // Check for new achievements (only in normal mode)
+    if (!this.state.isPracticeMode) {
+      const newAchievements = this.achievements.checkAndUnlock(stats);
+      if (newAchievements.length > 0) {
+        this.showNewAchievements(newAchievements);
+      }
     }
 
     // Update UI
@@ -261,6 +272,7 @@ class PrefixPlayApp {
       );
 
       this.state.setCurrentQuestion(question);
+      this.gameCard.setPracticeMode(this.state.isPracticeMode);
       this.gameCard.render(question);
     } catch (error) {
       console.error('Failed to generate question:', error);
@@ -281,7 +293,11 @@ class PrefixPlayApp {
     const masteredCount = this.scoring.getMasteredEntities().length;
     const retryCount = this.retryPool.getCount(this.state.currentMode.id);
 
-    this.statsPanel.render(stats, { masteredCount, retryCount });
+    this.statsPanel.render(stats, {
+      masteredCount,
+      retryCount,
+      isPracticeMode: this.state.isPracticeMode
+    });
   }
 
   /**

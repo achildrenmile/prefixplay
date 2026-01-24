@@ -20,6 +20,14 @@ export class GameCard {
     this.element = null;
     this.question = null;
     this.isLocked = false;
+    this.isPracticeMode = false;
+  }
+
+  /**
+   * Set practice mode state
+   */
+  setPracticeMode(isPractice) {
+    this.isPracticeMode = isPractice;
   }
 
   /**
@@ -29,11 +37,16 @@ export class GameCard {
     this.question = question;
     this.isLocked = false;
 
+    const practiceBadge = this.isPracticeMode
+      ? `<span class="practice-badge">\u{1F4AA} ${t('practiceModeShort')}</span>`
+      : '';
+
     const html = `
-      <div class="game-card">
+      <div class="game-card ${this.isPracticeMode ? 'practice-active' : ''}">
         <div class="card-header">
           <span class="mode-icon">${question.metadata?.icon || '\u{1F4E1}'}</span>
           <span class="mode-label">${question.mode.name}</span>
+          ${practiceBadge}
         </div>
         <div class="card-map" id="question-map"></div>
         <div class="card-prompt">

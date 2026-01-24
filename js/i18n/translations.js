@@ -179,7 +179,10 @@ export const TRANSLATIONS = {
     noRetryItems: 'Keine Fehler zum \u00DCben',
     practiceDisabled: '\u00DCbungsmodus nicht verf\u00FCgbar (keine Fehler)',
     startPractice: '\u00DCbungsmodus starten ({count} Fehler)',
-    stopPractice: '\u00DCbungsmodus beenden'
+    stopPractice: '\u00DCbungsmodus beenden',
+    practiceComplete: '\u{1F389} \u00DCbung abgeschlossen! Alle Fehler wurden gelernt.',
+    practiceProgress: 'Noch {count} zu lernen',
+    practiceModeActive: '\u00DCbungsmodus'
   },
 
   en: {
@@ -352,7 +355,10 @@ export const TRANSLATIONS = {
     noRetryItems: 'No mistakes to practice',
     practiceDisabled: 'Practice mode unavailable (no mistakes)',
     startPractice: 'Start practice mode ({count} mistakes)',
-    stopPractice: 'Stop practice mode'
+    stopPractice: 'Stop practice mode',
+    practiceComplete: '\u{1F389} Practice complete! All mistakes have been learned.',
+    practiceProgress: '{count} left to learn',
+    practiceModeActive: 'Practice Mode'
   }
 };
 

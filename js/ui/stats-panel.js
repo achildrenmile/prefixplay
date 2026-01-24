@@ -18,7 +18,37 @@ export class StatsPanel {
    * Render stats
    */
   render(stats, options = {}) {
-    const { masteredCount = 0, retryCount = 0 } = options;
+    const { masteredCount = 0, retryCount = 0, isPracticeMode = false } = options;
+
+    // In practice mode, show simplified learning-focused stats
+    if (isPracticeMode) {
+      const html = `
+        <div class="stats-panel practice-mode">
+          <h3 class="stats-title">\u{1F4AA} ${t('practiceModeActive')}</h3>
+
+          <div class="practice-progress">
+            <div class="practice-progress-circle">
+              <span class="practice-count">${retryCount}</span>
+            </div>
+            <div class="practice-progress-label">${t('practiceProgress', { count: retryCount })}</div>
+          </div>
+
+          <div class="practice-tip">
+            <span>\u{1F4A1}</span>
+            <span>${t('practiceModeShort')}: ${t('noRetryItems').toLowerCase() === 'keine fehler zum üben' ? 'Fehler wiederholen' : 'Review mistakes'}</span>
+          </div>
+
+          <div class="help-link">
+            <a href="dxcc-list.html" class="help-link-btn">
+              <span class="help-icon">\u{2753}</span>
+              <span>Präfix-Übersicht</span>
+            </a>
+          </div>
+        </div>
+      `;
+      this.container.innerHTML = html;
+      return;
+    }
 
     const accuracy = stats.global.totalAttempts > 0
       ? ((stats.global.totalCorrect / stats.global.totalAttempts) * 100).toFixed(1)
