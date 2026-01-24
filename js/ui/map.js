@@ -552,6 +552,9 @@ export class WorldMap {
 
     // Build color map: OE prefix or state name -> color
     const colorMap = new Map();
+    // Also track prefix -> color for marker drawing
+    const prefixColorMap = new Map();
+
     if (options) {
       options.forEach((opt, i) => {
         const value = opt.value;
@@ -560,9 +563,15 @@ export class WorldMap {
         // If it's an OE prefix, get the state name
         if (AUSTRIA_STATES[value]) {
           colorMap.set(AUSTRIA_STATES[value].name.toLowerCase(), { color, prefix: value });
+          prefixColorMap.set(value, color);
         } else {
           // It's a state name directly
           colorMap.set(value.toLowerCase(), { color, prefix: null });
+          // Also map by prefix if we can find it
+          const prefix = STATE_NAME_TO_PREFIX[value.toLowerCase()];
+          if (prefix) {
+            prefixColorMap.set(prefix, color);
+          }
         }
       });
     }
@@ -570,9 +579,6 @@ export class WorldMap {
     // Draw background
     ctx.fillStyle = '#1e3a5f';
     ctx.fillRect(0, 0, this.width, this.height);
-
-    // Track centroids for markers
-    const stateCentroids = new Map();
 
     // Draw each Austrian state
     for (const feature of this.austriaStates.features) {
@@ -588,8 +594,6 @@ export class WorldMap {
         ctx.strokeStyle = '#475569';
         ctx.lineWidth = 1;
       }
-
-      let sumX = 0, sumY = 0, pointCount = 0;
 
       // Handle MultiPolygon and Polygon
       const polygons = feature.geometry.type === 'MultiPolygon'
@@ -611,35 +615,28 @@ export class WorldMap {
             } else {
               ctx.lineTo(pixel.x, pixel.y);
             }
-
-            if (highlighted) {
-              sumX += pixel.x;
-              sumY += pixel.y;
-              pointCount++;
-            }
           }
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
         }
       }
-
-      // Store centroid for markers
-      if (highlighted && pointCount > 0) {
-        stateCentroids.set(stateName, {
-          x: sumX / pointCount,
-          y: sumY / pointCount,
-          color: highlighted.color,
-          prefix: highlighted.prefix || STATE_NAME_TO_PREFIX[stateName]
-        });
-      }
     }
 
-    // Draw markers at state centroids (circles only, no labels)
-    for (const [stateName, data] of stateCentroids) {
+    // Draw markers using predefined AUSTRIA_STATES coordinates (ensures consistent visibility)
+    // This is especially important for small states like Vienna
+    for (const [prefix, color] of prefixColorMap) {
+      const stateInfo = AUSTRIA_STATES[prefix];
+      if (!stateInfo) continue;
+
+      const pixel = this.latLonToPixel(stateInfo.lat, stateInfo.lon, bounds);
+
+      // Use larger marker for Vienna (OE1) since its polygon is tiny
+      const radius = prefix === 'OE1' ? 14 : 10;
+
       ctx.beginPath();
-      ctx.arc(data.x, data.y, 10, 0, Math.PI * 2);
-      ctx.fillStyle = data.color;
+      ctx.arc(pixel.x, pixel.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
