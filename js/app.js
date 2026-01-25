@@ -78,7 +78,8 @@ class PrefixPlayApp {
     // Game Card
     this.gameCard = new GameCard(document.getElementById('game-area'), {
       onAnswer: (answer) => this.handleAnswer(answer),
-      onNext: () => this.nextQuestion()
+      onNext: () => this.nextQuestion(),
+      onNewRound: () => this.startNewRound()
     });
 
     // Stats Panel
@@ -214,6 +215,11 @@ class PrefixPlayApp {
     const question = this.state.currentQuestion;
     const wasCorrect = this.state.recordAnswer(question, userAnswer);
 
+    // Track round correct answers (only in normal mode)
+    if (!this.state.isPracticeMode && wasCorrect) {
+      this.state.recordRoundCorrect();
+    }
+
     // Update scoring system
     const stats = this.scoring.recordAnswer(
       this.state.currentMode.id,
@@ -264,6 +270,12 @@ class PrefixPlayApp {
    * Generate and display next question
    */
   nextQuestion() {
+    // Check if round is complete (only in normal mode)
+    if (!this.state.isPracticeMode && this.state.isRoundComplete()) {
+      this.showRoundComplete();
+      return;
+    }
+
     const excludeRecent = this.state.getRecentEntityIds(5);
 
     try {
@@ -275,8 +287,14 @@ class PrefixPlayApp {
         }
       );
 
+      // Increment round question counter (only in normal mode)
+      if (!this.state.isPracticeMode) {
+        this.state.incrementRoundQuestion();
+      }
+
       this.state.setCurrentQuestion(question);
       this.gameCard.setPracticeMode(this.state.isPracticeMode);
+      this.gameCard.setRoundProgress(this.state.isPracticeMode ? null : this.state.getRoundProgress());
       this.gameCard.render(question);
     } catch (error) {
       console.error('Failed to generate question:', error);
@@ -287,6 +305,25 @@ class PrefixPlayApp {
         this.nextQuestion();
       }
     }
+  }
+
+  /**
+   * Show round complete summary
+   */
+  showRoundComplete() {
+    const roundStats = {
+      correct: this.state.roundStats.correct,
+      total: this.state.roundStats.totalQuestions
+    };
+    this.gameCard.showRoundComplete(roundStats, this.state.currentMode.name);
+  }
+
+  /**
+   * Start a new round
+   */
+  startNewRound() {
+    this.state.resetRound();
+    this.nextQuestion();
   }
 
   /**

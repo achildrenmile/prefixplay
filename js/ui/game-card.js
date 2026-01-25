@@ -17,10 +17,12 @@ export class GameCard {
     this.container = container;
     this.onAnswer = options.onAnswer || (() => {});
     this.onNext = options.onNext || (() => {});
+    this.onNewRound = options.onNewRound || (() => {});
     this.element = null;
     this.question = null;
     this.isLocked = false;
     this.isPracticeMode = false;
+    this.roundProgress = null;
     this.boundHandleKeyDown = this.handleKeyDown.bind(this);
     this.boundHandleThemeChange = this.handleThemeChange.bind(this);
   }
@@ -30,6 +32,13 @@ export class GameCard {
    */
   setPracticeMode(isPractice) {
     this.isPracticeMode = isPractice;
+  }
+
+  /**
+   * Set round progress
+   */
+  setRoundProgress(progress) {
+    this.roundProgress = progress;
   }
 
   /**
@@ -43,12 +52,17 @@ export class GameCard {
       ? `<span class="practice-badge">\u{1F4AA} ${t('practiceModeShort')}</span>`
       : '';
 
+    const roundIndicator = !this.isPracticeMode && this.roundProgress
+      ? `<span class="round-indicator">${t('questionOf', { current: this.roundProgress.current, total: this.roundProgress.total })}</span>`
+      : '';
+
     const html = `
       <div class="game-card ${this.isPracticeMode ? 'practice-active' : ''}">
         <div class="card-header">
           <span class="mode-icon">${question.metadata?.icon || '\u{1F4E1}'}</span>
           <span class="mode-label">${question.mode.name}</span>
           ${practiceBadge}
+          ${roundIndicator}
         </div>
         <div class="card-map" id="question-map"></div>
         <div class="card-prompt">
@@ -230,6 +244,64 @@ export class GameCard {
         <p>${t('loading')}</p>
       </div>
     `;
+  }
+
+  /**
+   * Show round complete summary
+   */
+  showRoundComplete(roundStats, modeName) {
+    const percentage = Math.round((roundStats.correct / roundStats.total) * 100);
+    let emoji, message;
+
+    if (percentage === 100) {
+      emoji = '\u{1F3C6}';
+      message = t('roundPerfect');
+    } else if (percentage >= 80) {
+      emoji = '\u{1F31F}';
+      message = t('roundGreat');
+    } else if (percentage >= 60) {
+      emoji = '\u{1F44D}';
+      message = t('roundGood');
+    } else {
+      emoji = '\u{1F4AA}';
+      message = t('roundKeepPracticing');
+    }
+
+    this.container.innerHTML = `
+      <div class="game-card round-complete">
+        <div class="round-complete-content">
+          <div class="round-complete-emoji">${emoji}</div>
+          <h2>${t('roundComplete')}</h2>
+          <p class="round-complete-mode">${modeName}</p>
+          <div class="round-complete-score">
+            <span class="score-big">${roundStats.correct}/${roundStats.total}</span>
+            <span class="score-percent">(${percentage}%)</span>
+          </div>
+          <p class="round-complete-message">${message}</p>
+          <button class="new-round-btn">${t('newRound')} \u2192</button>
+        </div>
+      </div>
+    `;
+
+    // Attach listener for new round button
+    const newRoundBtn = this.container.querySelector('.new-round-btn');
+    if (newRoundBtn) {
+      newRoundBtn.addEventListener('click', () => {
+        this.onNewRound();
+      });
+      // Focus for keyboard navigation
+      setTimeout(() => newRoundBtn.focus(), 100);
+    }
+
+    // Handle Enter key for new round
+    const handleEnter = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        document.removeEventListener('keydown', handleEnter);
+        this.onNewRound();
+      }
+    };
+    document.addEventListener('keydown', handleEnter);
   }
 
   /**

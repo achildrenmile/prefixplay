@@ -16,7 +16,8 @@ export const GAME_MODES = {
     category: 'dxcc',
     description: 'Identify the country from a callsign prefix',
     questionTemplate: 'What country uses the prefix {prefix}?',
-    answerType: 'country'
+    answerType: 'country',
+    questionsPerRound: 20
   },
   COUNTRY_TO_PREFIX: {
     id: 'country-to-prefix',
@@ -25,7 +26,8 @@ export const GAME_MODES = {
     category: 'dxcc',
     description: 'Identify the prefix from a country name',
     questionTemplate: 'What is the primary prefix for {country}?',
-    answerType: 'prefix'
+    answerType: 'prefix',
+    questionsPerRound: 20
   },
 
   // Austria (OE) Modes
@@ -36,7 +38,8 @@ export const GAME_MODES = {
     category: 'austria',
     description: 'Identify the Austrian federal state from OE prefix',
     questionTemplate: 'Which federal state uses {prefix}?',
-    answerType: 'state'
+    answerType: 'state',
+    questionsPerRound: 9
   },
   STATE_TO_OE_PREFIX: {
     id: 'state-to-oe-prefix',
@@ -45,7 +48,8 @@ export const GAME_MODES = {
     category: 'austria',
     description: 'Identify the OE prefix from federal state',
     questionTemplate: 'What is the prefix for {state}?',
-    answerType: 'prefix'
+    answerType: 'prefix',
+    questionsPerRound: 9
   },
 
   // Neighbors (bordering countries) Modes
@@ -56,7 +60,8 @@ export const GAME_MODES = {
     category: 'neighbors',
     description: 'Identify the neighboring country from prefix',
     questionTemplate: 'Which country uses {prefix}?',
-    answerType: 'country'
+    answerType: 'country',
+    questionsPerRound: 8
   },
   COUNTRY_TO_NEIGHBOR_PREFIX: {
     id: 'country-to-neighbor-prefix',
@@ -65,7 +70,8 @@ export const GAME_MODES = {
     category: 'neighbors',
     description: 'Identify the prefix of a neighboring country',
     questionTemplate: 'What is the prefix for {country}?',
-    answerType: 'prefix'
+    answerType: 'prefix',
+    questionsPerRound: 8
   }
 };
 
@@ -125,6 +131,12 @@ export class GameState {
       attempted: 0,
       correct: 0
     };
+    // Round tracking
+    this.roundStats = {
+      questionNumber: 0,
+      correct: 0,
+      totalQuestions: GAME_MODES.PREFIX_TO_COUNTRY.questionsPerRound
+    };
   }
 
   /**
@@ -135,7 +147,51 @@ export class GameState {
     if (mode) {
       this.currentMode = mode;
       this.currentQuestion = null;
+      this.resetRound();
     }
+  }
+
+  /**
+   * Reset round stats for new round
+   */
+  resetRound() {
+    this.roundStats = {
+      questionNumber: 0,
+      correct: 0,
+      totalQuestions: this.currentMode.questionsPerRound
+    };
+  }
+
+  /**
+   * Get current round progress
+   */
+  getRoundProgress() {
+    return {
+      current: this.roundStats.questionNumber,
+      total: this.roundStats.totalQuestions,
+      correct: this.roundStats.correct
+    };
+  }
+
+  /**
+   * Check if round is complete
+   */
+  isRoundComplete() {
+    return this.roundStats.questionNumber >= this.roundStats.totalQuestions;
+  }
+
+  /**
+   * Increment round question count
+   */
+  incrementRoundQuestion() {
+    this.roundStats.questionNumber++;
+  }
+
+  /**
+   * Record correct answer in round
+   */
+  recordRoundCorrect() {
+    this.roundStats.correct++;
   }
 
   /**

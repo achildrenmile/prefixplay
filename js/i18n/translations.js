@@ -187,7 +187,16 @@ export const TRANSLATIONS = {
     prefixOverview: 'Präfix-Übersicht',
     theme: 'Design',
     themeDark: 'Dunkel',
-    themeLight: 'Hell'
+    themeLight: 'Hell',
+
+    // Round system
+    questionOf: 'Frage {current}/{total}',
+    roundComplete: 'Runde abgeschlossen!',
+    roundPerfect: 'Perfekt! Alle Fragen richtig!',
+    roundGreat: 'Super! Sehr gut gemacht!',
+    roundGood: 'Gut! Weiter so!',
+    roundKeepPracticing: 'Übung macht den Meister!',
+    newRound: 'Neue Runde'
   },
 
   en: {
@@ -368,7 +377,16 @@ export const TRANSLATIONS = {
     prefixOverview: 'Prefix Overview',
     theme: 'Theme',
     themeDark: 'Dark',
-    themeLight: 'Light'
+    themeLight: 'Light',
+
+    // Round system
+    questionOf: 'Question {current}/{total}',
+    roundComplete: 'Round Complete!',
+    roundPerfect: 'Perfect! All questions correct!',
+    roundGreat: 'Great job! Well done!',
+    roundGood: 'Good! Keep it up!',
+    roundKeepPracticing: 'Practice makes perfect!',
+    newRound: 'New Round'
   }
 };
 

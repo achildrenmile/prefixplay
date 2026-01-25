@@ -499,6 +499,90 @@ button {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
+/* Round Indicator */
+.round-indicator {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+/* Round Complete Screen */
+.game-card.round-complete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.round-complete-content {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.round-complete-emoji {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.round-complete-content h2 {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.round-complete-mode {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.round-complete-score {
+  margin-bottom: var(--spacing-md);
+}
+
+.score-big {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.score-percent {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
+.round-complete-message {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xl);
+}
+
+.new-round-btn {
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.new-round-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.new-round-btn:active {
+  transform: translateY(0);
+}
+
 .card-prompt {
   margin-bottom: var(--spacing-xl);
 }
