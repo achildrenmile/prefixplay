@@ -21,6 +21,8 @@ export class GameCard {
     this.question = null;
     this.isLocked = false;
     this.isPracticeMode = false;
+    this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+    this.boundHandleThemeChange = this.handleThemeChange.bind(this);
   }
 
   /**
@@ -129,7 +131,19 @@ export class GameCard {
     }
 
     // Keyboard support
-    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    document.addEventListener('keydown', this.boundHandleKeyDown);
+
+    // Theme change support - re-render map when theme changes
+    window.addEventListener('themechange', this.boundHandleThemeChange);
+  }
+
+  /**
+   * Handle theme change - re-render map with new colors
+   */
+  handleThemeChange() {
+    if (this.question && this.element) {
+      this.renderMap(this.question);
+    }
   }
 
   /**
@@ -231,6 +245,7 @@ export class GameCard {
    * Clean up event listeners
    */
   destroy() {
-    document.removeEventListener('keydown', this.handleKeyDown.bind(this));
+    document.removeEventListener('keydown', this.boundHandleKeyDown);
+    window.removeEventListener('themechange', this.boundHandleThemeChange);
   }
 }
