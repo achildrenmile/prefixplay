@@ -1,9 +1,9 @@
 /**
  * PrefixPlay Styles
- * Dark slate theme following firstcontact patterns
+ * Theme support: dark, light, and auto (system)
  */
 
-/* ===== CSS Variables ===== */
+/* ===== CSS Variables - Dark Theme (default) ===== */
 :root {
   /* Dark slate palette */
   --bg-primary: #0f172a;
@@ -19,6 +19,7 @@
   /* Accent colors */
   --accent-blue: #3b82f6;
   --accent-blue-light: #60a5fa;
+  --accent-blue-dark: #2563eb;
   --accent-green: #22c55e;
   --accent-green-light: #4ade80;
   --accent-yellow: #eab308;
@@ -57,6 +58,65 @@
   /* Layout */
   --header-height: 80px;
   --footer-height: 60px;
+
+  /* Map colors */
+  --map-ocean: #1e3a5f;
+  --map-land: #334155;
+  --map-land-stroke: #475569;
+}
+
+/* ===== Light Theme ===== */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #e2e8f0;
+  --bg-tertiary: #cbd5e1;
+  --bg-hover: #94a3b8;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --accent-blue: #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-blue-dark: #1d4ed8;
+  --accent-green: #16a34a;
+  --accent-green-light: #22c55e;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  --map-ocean: #bfdbfe;
+  --map-land: #e2e8f0;
+  --map-land-stroke: #94a3b8;
+}
+
+/* Auto theme - follows system preference */
+@media (prefers-color-scheme: light) {
+  [data-theme="auto"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #e2e8f0;
+    --bg-tertiary: #cbd5e1;
+    --bg-hover: #94a3b8;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+
+    --accent-blue: #2563eb;
+    --accent-blue-light: #3b82f6;
+    --accent-blue-dark: #1d4ed8;
+    --accent-green: #16a34a;
+    --accent-green-light: #22c55e;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    --map-ocean: #bfdbfe;
+    --map-land: #e2e8f0;
+    --map-land-stroke: #94a3b8;
+  }
 }
 
 /* ===== Reset & Base ===== */
@@ -109,7 +169,7 @@ button {
 
 /* ===== Header ===== */
 .header {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--bg-tertiary);
   padding: var(--spacing-md) var(--spacing-lg);
   text-align: center;
@@ -259,6 +319,44 @@ button {
 }
 
 .lang-name {
+  font-size: 0.85rem;
+}
+
+/* Theme Selector */
+.theme-selector {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.theme-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all var(--transition-normal);
+}
+
+.theme-btn:hover {
+  background: var(--bg-hover);
+}
+
+.theme-btn.active {
+  border-color: var(--accent-blue);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.theme-icon {
+  font-size: 1.1rem;
+}
+
+.theme-name {
   font-size: 0.85rem;
 }
 
@@ -1309,6 +1407,7 @@ button {
   }
 
   .lang-btn,
+  .theme-btn,
   .mode-btn,
   .practice-btn {
     min-height: 48px;

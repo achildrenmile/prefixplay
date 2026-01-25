@@ -5,6 +5,7 @@
 
 import { t, getLanguage, setLanguage, getAvailableLanguages } from '../i18n/translations.js';
 import { getDxccModes, getAustriaModes, getNeighborModes } from '../models/game-state.js';
+import { getTheme, setTheme, getAvailableThemes } from '../systems/theme.js';
 
 /**
  * Menu Class
@@ -63,6 +64,21 @@ export class Menu {
                       title="${lang.name}">
                 <span class="lang-flag">${lang.flag}</span>
                 <span class="lang-name">${lang.name}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Theme Selector -->
+        <div class="menu-section">
+          <label class="menu-label">${t('theme')}</label>
+          <div class="theme-selector">
+            ${getAvailableThemes().map(theme => `
+              <button class="theme-btn ${theme.code === getTheme() ? 'active' : ''}"
+                      data-theme="${theme.code}"
+                      title="${t('theme' + theme.code.charAt(0).toUpperCase() + theme.code.slice(1))}">
+                <span class="theme-icon">${theme.icon}</span>
+                <span class="theme-name">${t('theme' + theme.code.charAt(0).toUpperCase() + theme.code.slice(1))}</span>
               </button>
             `).join('')}
           </div>
@@ -156,6 +172,18 @@ export class Menu {
       btn.addEventListener('click', () => {
         const lang = btn.dataset.lang;
         setLanguage(lang);
+      });
+    });
+
+    // Theme buttons
+    const themeBtns = this.container.querySelectorAll('.theme-btn');
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme;
+        setTheme(theme);
+        // Update active state
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
       });
     });
 

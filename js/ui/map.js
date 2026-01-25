@@ -414,6 +414,24 @@ const STATE_NAME_TO_PREFIX = {
 const QUIZ_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f97316'];
 
 /**
+ * Get CSS variable value from the document
+ */
+function getCSSVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/**
+ * Get theme-aware map colors
+ */
+function getMapColors() {
+  return {
+    ocean: getCSSVar('--map-ocean') || '#1e3a5f',
+    land: getCSSVar('--map-land') || '#334155',
+    landStroke: getCSSVar('--map-land-stroke') || '#475569'
+  };
+}
+
+/**
  * WorldMap class
  */
 export class WorldMap {
@@ -576,8 +594,11 @@ export class WorldMap {
       });
     }
 
+    // Get theme-aware colors
+    const mapColors = getMapColors();
+
     // Draw background
-    ctx.fillStyle = '#1e3a5f';
+    ctx.fillStyle = mapColors.ocean;
     ctx.fillRect(0, 0, this.width, this.height);
 
     // Sort features so Wien is drawn LAST (on top, since it's inside Niederösterreich)
@@ -597,8 +618,8 @@ export class WorldMap {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
       } else {
-        ctx.fillStyle = '#334155';
-        ctx.strokeStyle = '#475569';
+        ctx.fillStyle = mapColors.land;
+        ctx.strokeStyle = mapColors.landStroke;
         ctx.lineWidth = 1;
       }
 
@@ -664,8 +685,11 @@ export class WorldMap {
       });
     }
 
+    // Get theme-aware colors
+    const mapColors = getMapColors();
+
     // Draw ocean
-    ctx.fillStyle = '#1e3a5f';
+    ctx.fillStyle = mapColors.ocean;
     ctx.fillRect(0, 0, this.width, this.height);
 
     // Track centroids for highlighted countries to draw markers
@@ -683,8 +707,8 @@ export class WorldMap {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
       } else {
-        ctx.fillStyle = '#334155';
-        ctx.strokeStyle = '#475569';
+        ctx.fillStyle = mapColors.land;
+        ctx.strokeStyle = mapColors.landStroke;
         ctx.lineWidth = 0.5;
       }
 

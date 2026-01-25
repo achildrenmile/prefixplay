@@ -184,7 +184,11 @@ export const TRANSLATIONS = {
     practiceProgress: 'Noch {count} zu lernen',
     practiceModeActive: '\u00DCbungsmodus',
     practiceTip: 'Fehler wiederholen',
-    prefixOverview: 'Präfix-Übersicht'
+    prefixOverview: 'Präfix-Übersicht',
+    theme: 'Design',
+    themeDark: 'Dunkel',
+    themeLight: 'Hell',
+    themeAuto: 'Auto'
   },
 
   en: {
@@ -362,7 +366,11 @@ export const TRANSLATIONS = {
     practiceProgress: '{count} left to learn',
     practiceModeActive: 'Practice Mode',
     practiceTip: 'Review your mistakes',
-    prefixOverview: 'Prefix Overview'
+    prefixOverview: 'Prefix Overview',
+    theme: 'Theme',
+    themeDark: 'Dark',
+    themeLight: 'Light',
+    themeAuto: 'Auto'
   }
 };
 

@@ -16,6 +16,7 @@ import { AchievementsPanel } from './ui/achievements-panel.js';
 import { showPrivacyNotice, showResetConfirmation, showToast, showAchievementToast } from './ui/modals.js';
 import { initI18n, t, getLanguage } from './i18n/translations.js';
 import { loadConfig } from './config.js';
+import { initTheme } from './systems/theme.js';
 
 /**
  * Main Application Class
@@ -24,6 +25,9 @@ class PrefixPlayApp {
   constructor() {
     // Initialize i18n first
     initI18n();
+
+    // Initialize theme
+    initTheme();
 
     // Initialize data lookups
     initializeLookups();
