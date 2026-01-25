@@ -4,7 +4,7 @@
  */
 
 const STORAGE_KEY = 'prefixplay_theme';
-const VALID_THEMES = ['dark', 'light', 'auto'];
+const VALID_THEMES = ['dark', 'light'];
 
 let currentTheme = 'dark';
 
@@ -56,19 +56,13 @@ function applyTheme(theme) {
 export function getAvailableThemes() {
   return [
     { code: 'dark', icon: '🌙' },
-    { code: 'light', icon: '☀️' },
-    { code: 'auto', icon: '🔄' }
+    { code: 'light', icon: '☀️' }
   ];
 }
 
 /**
- * Check if current effective theme is light
- * (considers auto mode with system preference)
+ * Check if current theme is light
  */
 export function isLightTheme() {
-  if (currentTheme === 'light') return true;
-  if (currentTheme === 'auto') {
-    return window.matchMedia('(prefers-color-scheme: light)').matches;
-  }
-  return false;
+  return currentTheme === 'light';
 }

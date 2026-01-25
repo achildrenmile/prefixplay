@@ -187,8 +187,7 @@ export const TRANSLATIONS = {
     prefixOverview: 'Präfix-Übersicht',
     theme: 'Design',
     themeDark: 'Dunkel',
-    themeLight: 'Hell',
-    themeAuto: 'Auto'
+    themeLight: 'Hell'
   },
 
   en: {
@@ -369,8 +368,7 @@ export const TRANSLATIONS = {
     prefixOverview: 'Prefix Overview',
     theme: 'Theme',
     themeDark: 'Dark',
-    themeLight: 'Light',
-    themeAuto: 'Auto'
+    themeLight: 'Light'
   }
 };
 
